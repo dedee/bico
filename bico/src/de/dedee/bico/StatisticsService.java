@@ -17,6 +17,8 @@
 
 package de.dedee.bico;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -61,6 +63,8 @@ public class StatisticsService extends Service {
 	private static final String COM_GOOGLE_ANDROID_APPS_MYTRACKS_TRACK_STARTED = "com.google.android.apps.mytracks.TRACK_STARTED";
 	private static final String ORG_METAWATCH_MANAGER_BUTTON_PRESS = "org.metawatch.manager.BUTTON_PRESS";
 	private static final String ORG_METAWATCH_MANAGER_APPLICATION_DISCOVERY = "org.metawatch.manager.APPLICATION_DISCOVERY";
+	private static final String ORG_METAWATCH_MANAGER_WIDGETS_DESIRED = "org.metawatch.manager.widgets_desired";
+	private static final String ORG_METAWATCH_MANAGER_GET_PREVIEWS = "org.metawatch.manager.get_previews";
 	private final static String WIDGET_ID = "bico_widget_96_32";
 	private final static String WIDGET_DESCRIPTION = "bico Widget (96x32)";
 
@@ -71,6 +75,7 @@ public class StatisticsService extends Service {
 	private final Messenger messenger = new Messenger(new IncomingHandler());
 	private final MyTracksServiceStatusReceiver serviceStatusReceiver = new MyTracksServiceStatusReceiver();
 
+	private boolean widgetEnabled;
 	private Timer timer;
 	private Intent mytracksIntent;
 	private ITrackRecordingService myTracksService;
@@ -153,17 +158,30 @@ public class StatisticsService extends Service {
 				sendStatistics(lsi);
 			} else {
 				Log.d(C.TAG, "MyTracks is not active right now...");
+				stopTimer();
 			}
 		}
+	}
+
+	private void vibrate() {
+		Intent broadcast = new Intent("org.metawatch.manager.VIBRATE");
+		Bundle b = new Bundle();
+		b.putInt("vibrate_on", 200);
+		b.putInt("vibrate_off", 200);
+		b.putInt("vibrate_cycles", 2);
+		broadcast.putExtras(b);
+		sendBroadcast(broadcast);
 	}
 
 	private void startTimer() {
 		timer = new Timer();
 		timer.schedule(new UpdateTask(), TIME_INITIAL_DELAY, TIME_PERIOD);
+		vibrate();
 	}
 
 	private void stopTimer() {
 		timer.cancel();
+		vibrate();
 	}
 
 	private void clearScreen() {
@@ -220,8 +238,6 @@ public class StatisticsService extends Service {
 
 	class MyTracksServiceStatusReceiver extends BroadcastReceiver {
 
-		private static final String ORG_METAWATCH_MANAGER_GET_PREVIEWS = "org.metawatch.manager.get_previews";
-
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
@@ -244,11 +260,21 @@ public class StatisticsService extends Service {
 			} else if (action.equals(ORG_METAWATCH_MANAGER_REFRESH_WIDGET_REQUEST)) {
 				Log.d(C.TAG, "Widget update requested we resend the previous stats or clear the screen");
 				Bundle bundle = intent.getExtras();
+				if (bundle.containsKey(ORG_METAWATCH_MANAGER_WIDGETS_DESIRED)) {
+					ArrayList<String> activatedWidgetIds = new ArrayList<String>(Arrays.asList(bundle
+							.getStringArray(ORG_METAWATCH_MANAGER_WIDGETS_DESIRED)));
+					// Check if widgets_desired contains each widget ID you're responsible for
+					// and send an update
+					widgetEnabled = (activatedWidgetIds != null && activatedWidgetIds.contains(WIDGET_ID));
+					if (widgetEnabled) {
+						Log.i(C.TAG, "Got REFRESH_WIDGET_REQUEST and we are activated");
+					}
+				}
 				boolean previewRequested = bundle.containsKey(ORG_METAWATCH_MANAGER_GET_PREVIEWS);
 				if (previewRequested) {
 					Log.d(C.TAG, "A preview picture is requested, so sending some nice preview");
 					sendStatistics(StatisticsInfoConverter.getDemoStatistics());
-				} else {
+				} else if (widgetEnabled) {
 					repaint();
 				}
 			} else if (action.equals(ORG_METAWATCH_MANAGER_APPLICATION_DISCOVERY)) {
