@@ -52,8 +52,8 @@ public class StatisticsService extends Service {
 	private static final String ORG_METAWATCH_MANAGER_REFRESH_WIDGET_REQUEST = "org.metawatch.manager.REFRESH_WIDGET_REQUEST";
 	private static final String COM_GOOGLE_ANDROID_APPS_MYTRACKS_TRACK_STOPPED = "com.google.android.apps.mytracks.TRACK_STOPPED";
 	private static final String COM_GOOGLE_ANDROID_APPS_MYTRACKS_TRACK_STARTED = "com.google.android.apps.mytracks.TRACK_STARTED";
-	private final static String WIDGET_ID = "bico_widget_24_32";
-	private final static String WIDGET_DESCRIPTION = "bico Widget (24x32)";
+	private final static String WIDGET_ID = "bico_widget_96_32";
+	private final static String WIDGET_DESCRIPTION = "bico Widget (96x32)";
 
 	private final static int TIME_MILLISECONDS = 1000;
 	private static final int TIME_PERIOD = 10 * TIME_MILLISECONDS;
