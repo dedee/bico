@@ -17,7 +17,6 @@
 
 package de.dedee.bico;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -34,6 +33,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -61,8 +61,6 @@ public class StatisticsService extends Service {
 	private static final String COM_GOOGLE_ANDROID_APPS_MYTRACKS_TRACK_STARTED = "com.google.android.apps.mytracks.TRACK_STARTED";
 	private static final String ORG_METAWATCH_MANAGER_BUTTON_PRESS = "org.metawatch.manager.BUTTON_PRESS";
 	private static final String ORG_METAWATCH_MANAGER_APPLICATION_DISCOVERY = "org.metawatch.manager.APPLICATION_DISCOVERY";
-	// private static final String ORG_METAWATCH_MANAGER_APPLICATION_ANNOUNCE =
-	// "org.metawatch.manager.APPLICATION_ANNOUNCE";
 	private final static String WIDGET_ID = "bico_widget_96_32";
 	private final static String WIDGET_DESCRIPTION = "bico Widget (96x32)";
 
@@ -170,9 +168,7 @@ public class StatisticsService extends Service {
 
 	private void clearScreen() {
 		// Clear widget screen.
-		ArrayList<StatisticsInfo> list = new ArrayList<StatisticsInfo>();
-		list.add(new StatisticsInfo("Status", "Not active"));
-		sendStatistics(list);
+		sendStatistics(StatisticsInfoConverter.getClearScreenStatistics());
 	}
 
 	private void sendStatistics(List<StatisticsInfo> lsi) {
@@ -224,6 +220,8 @@ public class StatisticsService extends Service {
 
 	class MyTracksServiceStatusReceiver extends BroadcastReceiver {
 
+		private static final String ORG_METAWATCH_MANAGER_GET_PREVIEWS = "org.metawatch.manager.get_previews";
+
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
@@ -245,7 +243,14 @@ public class StatisticsService extends Service {
 				clearScreen();
 			} else if (action.equals(ORG_METAWATCH_MANAGER_REFRESH_WIDGET_REQUEST)) {
 				Log.d(C.TAG, "Widget update requested we resend the previous stats or clear the screen");
-				repaint();
+				Bundle bundle = intent.getExtras();
+				boolean previewRequested = bundle.containsKey(ORG_METAWATCH_MANAGER_GET_PREVIEWS);
+				if (previewRequested) {
+					Log.d(C.TAG, "A preview picture is requested, so sending some nice preview");
+					sendStatistics(StatisticsInfoConverter.getDemoStatistics());
+				} else {
+					repaint();
+				}
 			} else if (action.equals(ORG_METAWATCH_MANAGER_APPLICATION_DISCOVERY)) {
 				Log.d(C.TAG, "Received Discovery request from MWM");
 				// When the MWM app sends the discovery we update the screen once to get it included in the widget list.
