@@ -15,6 +15,17 @@
 
               https://github.com/dedee/bico
 
+WHAT IS BICO
+============
+
+You love to do some sports (running, cycling, etc.)?
+You are using Google MyTracks to record your GPS tracks with your Android phone?
+You own a MetaWatch or Strata?
+
+If yes, BICO could be helpful to you.
+
+Whenever you start recording a track with MyTracks the important statistics (average moving speed, moving time and elevation gain) are displayed right at your wrist.
+
 
 DISCLAIMER
 ==========
