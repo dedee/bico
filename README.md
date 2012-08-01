@@ -29,8 +29,8 @@ PREREQUISITES
 - You need to have a MetaWatch
 - You should own an Android phone
 - Install two apps from Google Play on your phone
-	- Community Edition of MWM MetaWatch App (https://play.google.com/store/apps/details?id=org.metawatch.communityedition)
-	- Google MyTracks (https://play.google.com/store/apps/details?id=com.google.android.maps.mytracks)
+	- [Community Edition of MWM MetaWatch App] (https://play.google.com/store/apps/details?id=org.metawatch.communityedition)
+	- [Google MyTracks] (https://play.google.com/store/apps/details?id=com.google.android.maps.mytracks)
 
 INSTALLATION
 ============

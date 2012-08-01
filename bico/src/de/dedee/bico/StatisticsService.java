@@ -43,6 +43,13 @@ import android.util.Log;
 
 import com.google.android.apps.mytracks.services.ITrackRecordingService;
 
+/**
+ * Main background service which itself connects to the MyTracks service and captures all the statistics data whenever a
+ * track is recorded in MyTracks. The MyTracks app itself is opensource and its API is documented basically.
+ * http://code.google.com/p/mytracks/wiki/MyTracksApi
+ * 
+ * @author dedee
+ */
 public class StatisticsService extends Service {
 
 	private static final int WIDGET_HEIGHT = 32;
@@ -52,6 +59,10 @@ public class StatisticsService extends Service {
 	private static final String ORG_METAWATCH_MANAGER_REFRESH_WIDGET_REQUEST = "org.metawatch.manager.REFRESH_WIDGET_REQUEST";
 	private static final String COM_GOOGLE_ANDROID_APPS_MYTRACKS_TRACK_STOPPED = "com.google.android.apps.mytracks.TRACK_STOPPED";
 	private static final String COM_GOOGLE_ANDROID_APPS_MYTRACKS_TRACK_STARTED = "com.google.android.apps.mytracks.TRACK_STARTED";
+	private static final String ORG_METAWATCH_MANAGER_BUTTON_PRESS = "org.metawatch.manager.BUTTON_PRESS";
+	private static final String ORG_METAWATCH_MANAGER_APPLICATION_DISCOVERY = "org.metawatch.manager.APPLICATION_DISCOVERY";
+	// private static final String ORG_METAWATCH_MANAGER_APPLICATION_ANNOUNCE =
+	// "org.metawatch.manager.APPLICATION_ANNOUNCE";
 	private final static String WIDGET_ID = "bico_widget_96_32";
 	private final static String WIDGET_DESCRIPTION = "bico Widget (96x32)";
 
@@ -65,6 +76,7 @@ public class StatisticsService extends Service {
 	private Timer timer;
 	private Intent mytracksIntent;
 	private ITrackRecordingService myTracksService;
+	private List<StatisticsInfo> lastStatistics;
 
 	@Override
 	public void onCreate() {
@@ -83,6 +95,8 @@ public class StatisticsService extends Service {
 		intentFilter.addAction(COM_GOOGLE_ANDROID_APPS_MYTRACKS_TRACK_STARTED);
 		intentFilter.addAction(COM_GOOGLE_ANDROID_APPS_MYTRACKS_TRACK_STOPPED);
 		intentFilter.addAction(ORG_METAWATCH_MANAGER_REFRESH_WIDGET_REQUEST);
+		intentFilter.addAction(ORG_METAWATCH_MANAGER_APPLICATION_DISCOVERY);
+		intentFilter.addAction(ORG_METAWATCH_MANAGER_BUTTON_PRESS);
 		registerReceiver(serviceStatusReceiver, intentFilter);
 	}
 
@@ -162,10 +176,18 @@ public class StatisticsService extends Service {
 	}
 
 	private void sendStatistics(List<StatisticsInfo> lsi) {
+		lastStatistics = lsi;
 		Bitmap bitmap = createTextBitmap(this, lsi);
 		Intent intent = Utils.createWidgetUpdateIntent(bitmap, WIDGET_ID, WIDGET_DESCRIPTION, 1);
 		sendBroadcast(intent);
 		Log.d(C.TAG, "Broadcast sent to MetaWatch: " + lsi);
+	}
+
+	private void repaint() {
+		if (lastStatistics != null)
+			sendStatistics(lastStatistics);
+		else
+			clearScreen();
 	}
 
 	public static Bitmap createTextBitmap(Context context, List<StatisticsInfo> lsi) {
@@ -201,6 +223,7 @@ public class StatisticsService extends Service {
 	}
 
 	class MyTracksServiceStatusReceiver extends BroadcastReceiver {
+
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
@@ -221,7 +244,15 @@ public class StatisticsService extends Service {
 				stopTimer();
 				clearScreen();
 			} else if (action.equals(ORG_METAWATCH_MANAGER_REFRESH_WIDGET_REQUEST)) {
-				Log.d(C.TAG, "Widget update requested but ignored currently");
+				Log.d(C.TAG, "Widget update requested we resend the previous stats or clear the screen");
+				repaint();
+			} else if (action.equals(ORG_METAWATCH_MANAGER_APPLICATION_DISCOVERY)) {
+				Log.d(C.TAG, "Received Discovery request from MWM");
+				// When the MWM app sends the discovery we update the screen once to get it included in the widget list.
+				// Note: We are no MWM app - just a widget. So nothing to announce.
+				repaint();
+			} else if (action.equals(ORG_METAWATCH_MANAGER_BUTTON_PRESS)) {
+				Log.d(C.TAG, "Received a button event from the MetaWatch. Currently we ignore this");
 			} else {
 				Log.w(C.TAG, "Ignored action in receiver " + action);
 			}
