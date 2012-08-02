@@ -19,7 +19,7 @@ package de.dedee.bico;
 
 public interface C {
 
-	public final static String TAG = "ddmytrck";
+	public final static String TAG = "bico";
 
 	public final static boolean DEBUGTOASTS = true;
 

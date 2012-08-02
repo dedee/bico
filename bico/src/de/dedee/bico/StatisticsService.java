@@ -86,13 +86,6 @@ public class StatisticsService extends Service {
 		super.onCreate();
 		Log.d(C.TAG, "Service created");
 
-		mytracksIntent = new Intent();
-		ComponentName componentName = new ComponentName(getString(R.string.mytracks_service_package),
-				getString(R.string.mytracks_service_class));
-		mytracksIntent.setComponent(componentName);
-		startService(mytracksIntent);
-		bindService(mytracksIntent, serviceConnection, Context.BIND_AUTO_CREATE);
-
 		// Register to MyTracks service to receiver notifications.
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(COM_GOOGLE_ANDROID_APPS_MYTRACKS_TRACK_STARTED);
@@ -106,7 +99,6 @@ public class StatisticsService extends Service {
 	@Override
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
-		startTimer();
 		clearScreen();
 		Log.d(C.TAG, "Service started");
 	}
@@ -115,9 +107,6 @@ public class StatisticsService extends Service {
 	public void onDestroy() {
 		super.onDestroy();
 		unregisterReceiver(serviceStatusReceiver);
-		if (myTracksService != null) {
-			unbindService(serviceConnection);
-		}
 		clearScreen();
 		stopTimer();
 		Log.d(C.TAG, "Service destroyed");
@@ -126,6 +115,29 @@ public class StatisticsService extends Service {
 	@Override
 	public IBinder onBind(Intent intent) {
 		return messenger.getBinder();
+	}
+
+	/**
+	 * Binds to the MyTracks service
+	 */
+	private void bindToMyTracks() {
+		Log.i(C.TAG, "Binding to MyTracks service");
+		mytracksIntent = new Intent();
+		ComponentName componentName = new ComponentName(getString(R.string.mytracks_service_package),
+				getString(R.string.mytracks_service_class));
+		mytracksIntent.setComponent(componentName);
+		boolean status = bindService(mytracksIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+		Log.d(C.TAG, "Started service via intent... Status: " + status);
+	}
+
+	/**
+	 * Unbinds from MyTracks service
+	 */
+	private void unbindFromMyTracks() {
+		Log.i(C.TAG, "Unbinding from MyTracks service");
+		if (myTracksService != null) {
+			unbindService(serviceConnection);
+		}
 	}
 
 	private boolean isMyTracksActive() {
@@ -240,23 +252,21 @@ public class StatisticsService extends Service {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
+
 			String action = intent.getAction();
+
 			if (action.equals(COM_GOOGLE_ANDROID_APPS_MYTRACKS_TRACK_STARTED)) {
 				Log.d(C.TAG, "The track was started");
-				startService(mytracksIntent);
-				boolean status = bindService(mytracksIntent, serviceConnection, Context.BIND_AUTO_CREATE);
-				Log.d(C.TAG, "Started service via intent... Status: " + status);
+				bindToMyTracks();
 				clearScreen();
 				startTimer();
+
 			} else if (action.equals(COM_GOOGLE_ANDROID_APPS_MYTRACKS_TRACK_STOPPED)) {
 				Log.d(C.TAG, "The track was stopped");
-				// Following stuff will be done in onServiceDisconnected
-				// if (myTracksService != null) {
-				// unbindService(serviceConnection);
-				// myTracksService = null;
-				// }
+				unbindFromMyTracks();
 				stopTimer();
 				clearScreen();
+
 			} else if (action.equals(ORG_METAWATCH_MANAGER_REFRESH_WIDGET_REQUEST)) {
 				Log.d(C.TAG, "Widget update requested we resend the previous stats or clear the screen");
 				Bundle bundle = intent.getExtras();
@@ -277,13 +287,16 @@ public class StatisticsService extends Service {
 				} else if (widgetEnabled) {
 					repaint();
 				}
+
 			} else if (action.equals(ORG_METAWATCH_MANAGER_APPLICATION_DISCOVERY)) {
 				Log.d(C.TAG, "Received Discovery request from MWM");
 				// When the MWM app sends the discovery we update the screen once to get it included in the widget list.
 				// Note: We are no MWM app - just a widget. So nothing to announce.
 				repaint();
+
 			} else if (action.equals(ORG_METAWATCH_MANAGER_BUTTON_PRESS)) {
 				Log.d(C.TAG, "Received a button event from the MetaWatch. Currently we ignore this");
+
 			} else {
 				Log.w(C.TAG, "Ignored action in receiver " + action);
 			}
