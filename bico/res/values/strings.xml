@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">bico - MetaWatch Bike Computer</string>
     <string name="labelversion">Version</string>
     <string name="defaultversion">Unknown</string>
+    <string name="status">Status</string>
+    <string name="active">active</string>
+    <string name="notactive">not active</string>
+    <string name="avgspeed">Avg Speed</string>
+    <string name="time">Time</string>
+    <string name="elevation">Elevation</string>
+
 </resources>

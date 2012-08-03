@@ -55,4 +55,6 @@ public interface UserInterface {
 
 	void vibrate();
 
+	void setActive(boolean b);
+
 }

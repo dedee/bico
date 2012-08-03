@@ -66,6 +66,7 @@ public class MyTracksConnection {
 
 		startTimer();
 		ui.clearScreen();
+		ui.setActive(true);
 
 		return status;
 	}
@@ -76,6 +77,7 @@ public class MyTracksConnection {
 	public void unbindFromMyTracks() {
 		Log.i(C.TAG, "Unbinding from MyTracks service");
 
+		ui.setActive(false);
 		ui.clearScreen();
 		stopTimer();
 

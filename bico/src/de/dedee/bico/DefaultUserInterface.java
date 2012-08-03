@@ -43,15 +43,31 @@ public class DefaultUserInterface implements UserInterface {
 	private static final int FONT_SIZE = 8;
 	private static final String FONT_NAME = "metawatch_8pt_5pxl_CAPS.ttf";
 	private static final String STATUS = "STATUS";
-	private static final String ELEVATION = "ELEVATION";
-	private static final String TIME = "TIME";
-	private static final String AVG_SPEED = "AVG SPEED";
 	private static final Resolution DEFAULT_RESOLUTION = new Resolution(96, 32);
+
+	private static final int WIDGET_PRIORITY_ACTIVE = 1; // 1 if active
+	private static final int WIDGET_PRIORITY_INACTIVE = 0; // 0 if inactive
 
 	private Context context;
 
 	private List<StatisticsInfo> lastStatistics;
 	private Resolution resolution = DEFAULT_RESOLUTION;
+	private boolean active;
+
+	/**
+	 * @return the active
+	 */
+	public boolean isActive() {
+		return active;
+	}
+
+	/**
+	 * @param active
+	 *            the active to set
+	 */
+	public void setActive(boolean active) {
+		this.active = active;
+	}
 
 	public DefaultUserInterface(Context context) {
 		this.context = context;
@@ -80,10 +96,11 @@ public class DefaultUserInterface implements UserInterface {
 		if (tripStatistics != null) {
 			double speed = Units.convertSpeed(tripStatistics.getAverageMovingSpeed());
 			long elevationGain = (long) Units.convertElevationGain(tripStatistics.getTotalElevationGain());
-			l.add(new StatisticsInfo(STATUS, "ACTIVE"));
-			l.add(new StatisticsInfo(AVG_SPEED, String.format("%.1f", speed)));
-			l.add(new StatisticsInfo(TIME, Long.toString(tripStatistics.getMovingTime() / 1000 / 60)));
-			l.add(new StatisticsInfo(ELEVATION, Long.toString(elevationGain)));
+			l.add(new StatisticsInfo(context.getString(R.string.status), context.getString(R.string.active)));
+			l.add(new StatisticsInfo(context.getString(R.string.avgspeed), String.format("%.1f", speed)));
+			l.add(new StatisticsInfo(context.getString(R.string.time),
+					Long.toString(tripStatistics.getMovingTime() / 1000 / 60)));
+			l.add(new StatisticsInfo(context.getString(R.string.elevation), Long.toString(elevationGain)));
 		}
 		sendStatistics(l);
 	}
@@ -92,7 +109,7 @@ public class DefaultUserInterface implements UserInterface {
 		lastStatistics = l;
 		Bitmap bitmap = createTextBitmap(context, l);
 		Intent intent = Utils.createWidgetUpdateIntent(bitmap, resolution.getWidgetIdentifier(),
-				resolution.getWidgetDescription(), 1);
+				resolution.getWidgetDescription(), active ? WIDGET_PRIORITY_ACTIVE : WIDGET_PRIORITY_INACTIVE);
 		context.sendBroadcast(intent);
 		Log.d(C.TAG, "Broadcast sent to MetaWatch: " + l);
 	}
@@ -109,7 +126,7 @@ public class DefaultUserInterface implements UserInterface {
 	public void clearScreen() {
 		// Clear widget screen.
 		List<StatisticsInfo> l = new ArrayList<StatisticsInfo>();
-		l.add(new StatisticsInfo(STATUS, "NOT ACTIVE"));
+		l.add(new StatisticsInfo(STATUS, context.getString(R.string.notactive)));
 		sendStatistics(l);
 	}
 
