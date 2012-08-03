@@ -25,8 +25,4 @@ public interface C {
 
 	public static final String VERSION = "0.1";
 
-	public final static String WIDGET_ID = "bico_widget_96_32";
-
-	public final static String WIDGET_DESCRIPTION = "bico Widget (96x32)";
-
 }

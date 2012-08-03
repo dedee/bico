@@ -15,23 +15,46 @@ import android.util.Log;
 
 import com.google.android.apps.mytracks.stats.TripStatistics;
 
+/**
+ * First dumb UI. Just text. Will be improved soon.
+ * 
+ * @author dedee
+ * 
+ */
 public class DefaultUserInterface implements UserInterface {
 
-	private static final int WIDGET_HEIGHT = 32;
-	private static final int WIDGET_WIDTH = 96;
 	private static final int FONT_SIZE = 8;
 	private static final String FONT_NAME = "metawatch_8pt_5pxl_CAPS.ttf";
 	private static final String STATUS = "STATUS";
 	private static final String ELEVATION = "ELEVATION";
 	private static final String TIME = "TIME";
 	private static final String AVG_SPEED = "AVG SPEED";
+	private static final Resolution DEFAULT_RESOLUTION = new Resolution(96, 32);
 
 	private Context context;
 
 	private TripStatistics lastStatistics;
+	private Resolution resolution = DEFAULT_RESOLUTION;
 
 	public DefaultUserInterface(Context context) {
 		this.context = context;
+	}
+
+	@Override
+	public List<Resolution> getSupportedResolutions() {
+		List<Resolution> l = new ArrayList<Resolution>();
+		l.add(DEFAULT_RESOLUTION);
+		return l;
+	}
+
+	@Override
+	public void setActiveResolution(Resolution resolution) {
+		this.resolution = resolution;
+	}
+
+	@Override
+	public Resolution getActiveResolution() {
+		return resolution;
 	}
 
 	@Override
@@ -48,7 +71,8 @@ public class DefaultUserInterface implements UserInterface {
 
 		lastStatistics = tripStatistics;
 		Bitmap bitmap = createTextBitmap(context, l);
-		Intent intent = Utils.createWidgetUpdateIntent(bitmap, C.WIDGET_ID, C.WIDGET_DESCRIPTION, 1);
+		Intent intent = Utils.createWidgetUpdateIntent(bitmap, resolution.getWidgetIdentifier(),
+				resolution.getWidgetDescription(), 1);
 		context.sendBroadcast(intent);
 		Log.d(C.TAG, "Broadcast sent to MetaWatch: " + l);
 	}
@@ -70,7 +94,8 @@ public class DefaultUserInterface implements UserInterface {
 		// l.add(new StatisticsInfo(TIME, ""));
 		// l.add(new StatisticsInfo(ELEVATION, ""));
 		Bitmap bitmap = createTextBitmap(context, l);
-		Intent intent = Utils.createWidgetUpdateIntent(bitmap, C.WIDGET_ID, C.WIDGET_DESCRIPTION, 1);
+		Intent intent = Utils.createWidgetUpdateIntent(bitmap, resolution.getWidgetIdentifier(),
+				resolution.getWidgetDescription(), 1);
 		context.sendBroadcast(intent);
 		Log.d(C.TAG, "Broadcast sent to MetaWatch: " + l);
 	}
@@ -92,9 +117,9 @@ public class DefaultUserInterface implements UserInterface {
 		context.sendBroadcast(broadcast);
 	}
 
-	private static Bitmap createTextBitmap(Context context, List<StatisticsInfo> lsi) {
+	private Bitmap createTextBitmap(Context context, List<StatisticsInfo> lsi) {
 		Typeface typeface = Typeface.createFromAsset(context.getAssets(), FONT_NAME);
-		Bitmap bitmap = Bitmap.createBitmap(WIDGET_WIDTH, WIDGET_HEIGHT, Bitmap.Config.RGB_565);
+		Bitmap bitmap = Bitmap.createBitmap(resolution.getWidth(), resolution.getHeight(), Bitmap.Config.RGB_565);
 		Canvas canvas = new Canvas(bitmap);
 		Paint paint = new Paint();
 		paint.setColor(Color.BLACK);
@@ -112,6 +137,39 @@ public class DefaultUserInterface implements UserInterface {
 		}
 
 		return bitmap;
+	}
+
+	class StatisticsInfo {
+
+		private String label;
+		private String value;
+
+		public StatisticsInfo(String label, String value) {
+			this.label = label;
+			this.value = value;
+		}
+
+		public void setLabel(String label) {
+			this.label = label;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
+
+		public String getLabel() {
+			return label;
+		}
+
+		public String getValue() {
+			return value;
+		}
+
+		@Override
+		public String toString() {
+			return getLabel() + ": " + getValue();
+		}
+
 	}
 
 }

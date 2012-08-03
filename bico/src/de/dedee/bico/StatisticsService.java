@@ -19,6 +19,7 @@ package de.dedee.bico;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -130,7 +131,18 @@ public class StatisticsService extends Service {
 							.getStringArray(IntentConstants.ORG_METAWATCH_MANAGER_WIDGETS_DESIRED)));
 					// Check if widgets_desired contains each widget ID you're responsible for
 					// and send an update
-					widgetEnabled = (activatedWidgetIds != null && activatedWidgetIds.contains(C.WIDGET_ID));
+					if (activatedWidgetIds != null) {
+						List<Resolution> supportedResolutions = ui.getSupportedResolutions();
+						for (Resolution r : supportedResolutions) {
+							if (activatedWidgetIds.contains(r.getWidgetIdentifier())) {
+								Log.i(C.TAG, r.getWidgetIdentifier()
+										+ " recognized as activated in MWM widget screen, so activating this one");
+								ui.setActiveResolution(r);
+								widgetEnabled = true;
+								break;
+							}
+						}
+					}
 					if (widgetEnabled) {
 						Log.i(C.TAG, "Got REFRESH_WIDGET_REQUEST and we are activated");
 					}
