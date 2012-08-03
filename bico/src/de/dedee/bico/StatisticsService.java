@@ -314,16 +314,18 @@ public class StatisticsService extends Service {
 	private ServiceConnection serviceConnection = new ServiceConnection() {
 		@Override
 		public void onServiceConnected(ComponentName className, IBinder service) {
+			Log.i(C.TAG, "onServiceConnected");
 			myTracksService = ITrackRecordingService.Stub.asInterface(service);
 			Log.d(C.TAG, "Service connected " + className);
 		}
 
 		@Override
 		public void onServiceDisconnected(ComponentName className) {
-			Log.d(C.TAG, "Service disconnected " + className);
+			Log.i(C.TAG, "onServiceDisconnected " + className);
 			if (myTracksService != null) {
 				unbindService(serviceConnection);
 				myTracksService = null;
+				Log.i(C.TAG, "MyTracks service unbound successfully");
 			}
 		}
 	};
