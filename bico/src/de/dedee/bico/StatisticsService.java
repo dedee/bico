@@ -104,6 +104,12 @@ public class StatisticsService extends Service {
 	}
 
 	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		// http://stackoverflow.com/questions/9755271/android-service-keeps-getting-killed?rq=1
+		return START_STICKY;
+	}
+
+	@Override
 	public void onDestroy() {
 		super.onDestroy();
 		unregisterReceiver(serviceStatusReceiver);
