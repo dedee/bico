@@ -128,7 +128,7 @@ public class StatisticsService extends Service {
 		mytracksIntent.setComponent(componentName);
 		// The startService is req
 		startService(mytracksIntent);
-		boolean status = bindService(mytracksIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+		boolean status = bindService(mytracksIntent, serviceConnection, 0);
 		Log.d(C.TAG, "Started service via intent... Status: " + status);
 		return status;
 	}
@@ -174,6 +174,7 @@ public class StatisticsService extends Service {
 				sendStatistics(lsi);
 			} else {
 				Log.d(C.TAG, "MyTracks is not active right now...");
+				clearScreen(); // Added to see if this happens.
 				stopTimer();
 			}
 		}
