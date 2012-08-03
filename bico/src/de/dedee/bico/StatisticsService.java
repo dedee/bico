@@ -120,14 +120,17 @@ public class StatisticsService extends Service {
 	/**
 	 * Binds to the MyTracks service
 	 */
-	private void bindToMyTracks() {
+	private boolean bindToMyTracks() {
 		Log.i(C.TAG, "Binding to MyTracks service");
 		mytracksIntent = new Intent();
 		ComponentName componentName = new ComponentName(getString(R.string.mytracks_service_package),
 				getString(R.string.mytracks_service_class));
 		mytracksIntent.setComponent(componentName);
+		// The startService is req
+		startService(mytracksIntent);
 		boolean status = bindService(mytracksIntent, serviceConnection, Context.BIND_AUTO_CREATE);
 		Log.d(C.TAG, "Started service via intent... Status: " + status);
+		return status;
 	}
 
 	/**
@@ -137,6 +140,7 @@ public class StatisticsService extends Service {
 		Log.i(C.TAG, "Unbinding from MyTracks service");
 		if (myTracksService != null) {
 			unbindService(serviceConnection);
+			stopService(mytracksIntent);
 		}
 	}
 
