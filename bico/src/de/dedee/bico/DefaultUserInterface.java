@@ -50,7 +50,7 @@ public class DefaultUserInterface implements UserInterface {
 
 	private Context context;
 
-	private TripStatistics lastStatistics;
+	private List<StatisticsInfo> lastStatistics;
 	private Resolution resolution = DEFAULT_RESOLUTION;
 
 	public DefaultUserInterface(Context context) {
@@ -85,8 +85,11 @@ public class DefaultUserInterface implements UserInterface {
 			l.add(new StatisticsInfo(TIME, Long.toString(tripStatistics.getMovingTime() / 1000 / 60)));
 			l.add(new StatisticsInfo(ELEVATION, Long.toString(elevationGain)));
 		}
+		sendStatistics(l);
+	}
 
-		lastStatistics = tripStatistics;
+	private void sendStatistics(List<StatisticsInfo> l) {
+		lastStatistics = l;
 		Bitmap bitmap = createTextBitmap(context, l);
 		Intent intent = Utils.createWidgetUpdateIntent(bitmap, resolution.getWidgetIdentifier(),
 				resolution.getWidgetDescription(), 1);
@@ -107,19 +110,12 @@ public class DefaultUserInterface implements UserInterface {
 		// Clear widget screen.
 		List<StatisticsInfo> l = new ArrayList<StatisticsInfo>();
 		l.add(new StatisticsInfo(STATUS, "NOT ACTIVE"));
-		// l.add(new StatisticsInfo(AVG_SPEED, ""));
-		// l.add(new StatisticsInfo(TIME, ""));
-		// l.add(new StatisticsInfo(ELEVATION, ""));
-		Bitmap bitmap = createTextBitmap(context, l);
-		Intent intent = Utils.createWidgetUpdateIntent(bitmap, resolution.getWidgetIdentifier(),
-				resolution.getWidgetDescription(), 1);
-		context.sendBroadcast(intent);
-		Log.d(C.TAG, "Broadcast sent to MetaWatch: " + l);
+		sendStatistics(l);
 	}
 
 	public void repaint() {
 		if (lastStatistics != null)
-			sendTripStatistics(lastStatistics);
+			sendStatistics(lastStatistics);
 		else
 			clearScreen();
 	}
