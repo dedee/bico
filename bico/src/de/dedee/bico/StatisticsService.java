@@ -186,13 +186,16 @@ public class StatisticsService extends Service {
 	}
 
 	private void startTimer() {
+		if (timer != null)
+			timer.cancel();
 		timer = new Timer();
 		timer.schedule(new UpdateTask(), TIME_INITIAL_DELAY, TIME_PERIOD);
 		vibrate();
 	}
 
 	private void stopTimer() {
-		timer.cancel();
+		if (timer != null)
+			timer.cancel();
 		vibrate();
 	}
 
