@@ -32,6 +32,8 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.util.Log;
+import de.dedee.bico.csm.StateContext;
+import de.dedee.bico.csm.states.Event;
 
 /**
  * Main background service which itself connects to the MyTracks service and captures all the statistics data whenever a
@@ -48,7 +50,9 @@ public class StatisticsService extends Service {
 	private boolean widgetEnabled;
 
 	private UserInterface ui;
-	private MyTracksConnection connection;
+	// private MyTracksConnection connection;
+
+	private StateContext ctx;
 
 	@Override
 	public void onCreate() {
@@ -56,7 +60,10 @@ public class StatisticsService extends Service {
 		Log.d(C.TAG, "Service created");
 
 		ui = new DefaultUserInterface(this);
-		connection = new MyTracksConnection(this, ui);
+		// connection = new MyTracksConnection(this, ui);
+		ctx = new StateContext(this, ui);
+		ctx.start();
+		ctx.sendEvent(Event.Connect);
 
 		// Register to MyTracks service to receiver notifications.
 		IntentFilter intentFilter = new IntentFilter();
@@ -86,7 +93,9 @@ public class StatisticsService extends Service {
 		super.onDestroy();
 		unregisterReceiver(serviceStatusReceiver);
 
-		connection.unbindFromMyTracks();
+		ctx.sendEvent(Event.Disconnect);
+		ctx.waitFor(Event.Disconnected, 500);
+		ctx.sendEvent(Event.Terminate);
 
 		Log.d(C.TAG, "Service destroyed");
 	}
@@ -116,12 +125,11 @@ public class StatisticsService extends Service {
 
 			if (action.equals(IntentConstants.COM_GOOGLE_ANDROID_APPS_MYTRACKS_TRACK_STARTED)) {
 				Log.d(C.TAG, "The track was started");
-				boolean status = connection.bindToMyTracks();
-				Log.d(C.TAG, "Connection to MyTracks status = " + status);
+				ctx.sendEvent(Event.Connect);
 
 			} else if (action.equals(IntentConstants.COM_GOOGLE_ANDROID_APPS_MYTRACKS_TRACK_STOPPED)) {
 				Log.d(C.TAG, "The track was stopped");
-				connection.unbindFromMyTracks();
+				ctx.sendEvent(Event.Disconnect);
 
 			} else if (action.equals(IntentConstants.ORG_METAWATCH_MANAGER_REFRESH_WIDGET_REQUEST)) {
 				Log.d(C.TAG, "Widget update requested we resend the previous stats or clear the screen");
