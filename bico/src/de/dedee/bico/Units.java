@@ -54,4 +54,26 @@ public class Units {
 		}
 		return metric;
 	}
+
+	public final static String durationToString(long durationInMillis) {
+		// hh:mm
+		long minutes = durationInMillis / 1000 / 60;
+		long h = minutes / 60;
+		long m = minutes % 60;
+		StringBuffer sb = new StringBuffer();
+
+		String s_h = Long.toString(h);
+		if (s_h.length() == 1)
+			sb.append('0');
+		sb.append(s_h);
+
+		sb.append(':');
+
+		String s_m = Long.toString(m);
+		if (s_m.length() == 1)
+			sb.append('0');
+		sb.append(s_m);
+
+		return sb.toString();
+	}
 }

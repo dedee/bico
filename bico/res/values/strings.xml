@@ -9,6 +9,6 @@
     <string name="notactive">not active</string>
     <string name="avgspeed">Avg Speed</string>
     <string name="time">Time</string>
-    <string name="elevation">Elevation</string>
+    <string name="elevation">Alt</string>
 
 </resources>

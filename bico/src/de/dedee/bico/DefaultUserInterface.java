@@ -98,8 +98,8 @@ public class DefaultUserInterface implements UserInterface {
 			long elevationGain = (long) Units.convertElevationGain(tripStatistics.getTotalElevationGain());
 			l.add(new StatisticsInfo(context.getString(R.string.status), context.getString(R.string.active)));
 			l.add(new StatisticsInfo(context.getString(R.string.avgspeed), String.format("%.1f", speed)));
-			l.add(new StatisticsInfo(context.getString(R.string.time),
-					Long.toString(tripStatistics.getMovingTime() / 1000 / 60)));
+			l.add(new StatisticsInfo(context.getString(R.string.time), Units.durationToString(tripStatistics
+					.getMovingTime())));
 			l.add(new StatisticsInfo(context.getString(R.string.elevation), Long.toString(elevationGain)));
 		}
 		sendStatistics(l);

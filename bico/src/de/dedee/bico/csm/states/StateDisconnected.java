@@ -30,7 +30,7 @@ public class StateDisconnected extends AbstractState {
 	@Override
 	public void work() throws StateExecutionException {
 		// Automatically try to connect
-		ctx.sendEvent(Event.Connect);
+		// ctx.sendEvent(Event.Connect);
 	}
 
 	@Override
