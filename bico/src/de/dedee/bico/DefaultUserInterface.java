@@ -43,84 +43,59 @@ public class DefaultUserInterface implements UserInterface {
 	private static final int FONT_SIZE = 8;
 	private static final String FONT_NAME = "metawatch_8pt_5pxl_CAPS.ttf";
 	private static final String STATUS = "STATUS";
-	private static final Resolution DEFAULT_RESOLUTION = new Resolution(96, 32);
-
 	private static final int WIDGET_PRIORITY_ACTIVE = 1; // 1 if active
 	private static final int WIDGET_PRIORITY_INACTIVE = 0; // 0 if inactive
 
 	private Context context;
-
-	private TripStatistics lastStatistics;
-	private TripStatistics demoStatistics;
-	private Resolution resolution = DEFAULT_RESOLUTION;
-	private boolean active;
+	private List<StatisticsInfo> lastStatistics;
+	private int lastWidgetPrio;
+	private WidgetVariant widgetVariant;
 
 	public DefaultUserInterface(Context context) {
 		this.context = context;
-
-		demoStatistics = new TripStatistics();
-		demoStatistics.setMovingTime(25 * 60 * 1000);
-		demoStatistics.setTotalElevationGain(280);
-		demoStatistics.setTotalDistance(10 * 1000);
-	}
-
-	@Override
-	public List<Resolution> getSupportedResolutions() {
-		List<Resolution> l = new ArrayList<Resolution>();
-		l.add(DEFAULT_RESOLUTION);
-		return l;
-	}
-
-	@Override
-	public void setActiveResolution(Resolution resolution) {
-		this.resolution = resolution;
-	}
-
-	@Override
-	public Resolution getActiveResolution() {
-		return resolution;
+		this.widgetVariant = new WidgetVariants().getDefault();
 	}
 
 	@Override
 	public void sendTripStatistics(TripStatistics tripStatistics) {
-		lastStatistics = tripStatistics;
-		List<StatisticsInfo> l = new ArrayList<StatisticsInfo>();
-		if (tripStatistics != null) {
-			double speed = Units.convertSpeed(tripStatistics.getAverageMovingSpeed());
-			long elevationGain = (long) Units.convertElevationGain(tripStatistics.getTotalElevationGain());
-			l.add(new StatisticsInfo(context.getString(R.string.status), context.getString(R.string.active)));
-			l.add(new StatisticsInfo(context.getString(R.string.avgspeed), String.format("%.1f", speed)));
-			l.add(new StatisticsInfo(context.getString(R.string.time), Units.durationToString(tripStatistics
-					.getMovingTime())));
-			l.add(new StatisticsInfo(context.getString(R.string.elevation), Long.toString(elevationGain)));
-			active = true;
-		} else {
-			l.add(new StatisticsInfo(STATUS, context.getString(R.string.notactive)));
-			active = false;
-		}
-		sendStatistics(l, active);
+		sendStatistics(convertTripStatistics(tripStatistics), WIDGET_PRIORITY_ACTIVE);
 	}
 
-	private void sendStatistics(List<StatisticsInfo> l, boolean active) {
+	private void sendStatistics(List<StatisticsInfo> l, int widgetPrio) {
+		if (widgetVariant == null) {
+			Log.e(C.TAG, "Bico seems not be configured");
+			return;
+		}
+
+		lastWidgetPrio = widgetPrio;
+		lastStatistics = l;
+
 		Bitmap bitmap = createTextBitmap(context, l);
-		Intent intent = Utils.createWidgetUpdateIntent(bitmap, resolution.getWidgetIdentifier(),
-				resolution.getWidgetDescription(), active ? WIDGET_PRIORITY_ACTIVE : WIDGET_PRIORITY_INACTIVE);
+		Intent intent = Utils.createWidgetUpdateIntent(bitmap, widgetVariant.getId(), widgetVariant.getDescription(),
+				widgetPrio);
 		context.sendBroadcast(intent);
-		Log.d(C.TAG, "Broadcast sent to MetaWatch: " + l);
+		Log.d(C.TAG, "Updating widget id: " + widgetVariant.getId() + " data: " + l);
 	}
 
 	@Override
 	public void sendDemoStatistics() {
-		sendTripStatistics(demoStatistics);
+		List<StatisticsInfo> l = new ArrayList<StatisticsInfo>();
+		l.add(new StatisticsInfo(context.getString(R.string.status), "DEMO"));
+		l.add(new StatisticsInfo(context.getString(R.string.avgspeed), "24"));
+		l.add(new StatisticsInfo(context.getString(R.string.time), "1234"));
+		l.add(new StatisticsInfo(context.getString(R.string.elevation), "1234"));
+		sendStatistics(l, WIDGET_PRIORITY_ACTIVE);
 	}
 
 	public void clearScreen() {
 		// Clear widget screen.
-		sendTripStatistics(null);
+		List<StatisticsInfo> l = new ArrayList<StatisticsInfo>();
+		l.add(new StatisticsInfo(STATUS, context.getString(R.string.notactive)));
+		sendStatistics(l, WIDGET_PRIORITY_INACTIVE);
 	}
 
 	public void repaint() {
-		sendTripStatistics(lastStatistics);
+		sendStatistics(lastStatistics, lastWidgetPrio);
 	}
 
 	public void vibrate() {
@@ -133,9 +108,26 @@ public class DefaultUserInterface implements UserInterface {
 		context.sendBroadcast(broadcast);
 	}
 
+	private List<StatisticsInfo> convertTripStatistics(TripStatistics ts) {
+		List<StatisticsInfo> l = new ArrayList<StatisticsInfo>();
+		if (ts != null) {
+			double speed = Units.convertSpeed(ts.getAverageMovingSpeed());
+			long elevationGain = (long) Units.convertElevationGain(ts.getTotalElevationGain());
+			l.add(new StatisticsInfo(context.getString(R.string.status), context.getString(R.string.active)));
+			l.add(new StatisticsInfo(context.getString(R.string.avgspeed), String.format("%.1f", speed)));
+			l.add(new StatisticsInfo(context.getString(R.string.time), Units.durationToString(ts.getMovingTime())));
+			l.add(new StatisticsInfo(context.getString(R.string.elevation), Long.toString(elevationGain)));
+
+		} else {
+			l.add(new StatisticsInfo(STATUS, context.getString(R.string.notactive)));
+		}
+		return l;
+	}
+
 	private Bitmap createTextBitmap(Context context, List<StatisticsInfo> lsi) {
 		Typeface typeface = Typeface.createFromAsset(context.getAssets(), FONT_NAME);
-		Bitmap bitmap = Bitmap.createBitmap(resolution.getWidth(), resolution.getHeight(), Bitmap.Config.RGB_565);
+		Bitmap bitmap = Bitmap.createBitmap(widgetVariant.getResolution().getWidth(), widgetVariant.getResolution()
+				.getHeight(), Bitmap.Config.RGB_565);
 		Canvas canvas = new Canvas(bitmap);
 		Paint paint = new Paint();
 		paint.setColor(Color.BLACK);
@@ -186,6 +178,16 @@ public class DefaultUserInterface implements UserInterface {
 			return getLabel() + ": " + getValue();
 		}
 
+	}
+
+	@Override
+	public void setActiveWidgetVariant(WidgetVariant wv) {
+		widgetVariant = wv;
+	}
+
+	@Override
+	public WidgetVariant getActiveWidgetVariant() {
+		return widgetVariant;
 	}
 
 }

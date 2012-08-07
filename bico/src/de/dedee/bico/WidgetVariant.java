@@ -17,42 +17,43 @@
 
 package de.dedee.bico;
 
-import com.google.android.apps.mytracks.stats.TripStatistics;
+public class WidgetVariant {
 
-public interface UserInterface {
-
-	/**
-	 * Returns a list of supported resolutions (e.g. 96x32, etc.).
-	 * 
-	 * @return List of supported resolutions
-	 */
-	// List<Resolution> getSupportedResolutions();
+	private String id;
+	private Resolution resolution;
+	private String name;
+	private String description;
 
 	/**
-	 * Configures which variant shall be used.
-	 * 
-	 * @param wv
-	 *            Active variant
+	 * @param id
+	 * @param resolution
 	 */
-	void setActiveWidgetVariant(WidgetVariant wv);
+	public WidgetVariant(String name, Resolution resolution, String description) {
+		this.name = name;
+		this.resolution = resolution;
+		this.description = name + " (" + resolution.getWidth() + "x" + resolution.getHeight() + ")";
+		this.id = this.description.replace(' ', '_');
+	}
 
-	// /**
-	// * Returns active resolution.
-	// *
-	// * @return Active resolution
-	// */
-	// Resolution getActiveResolution();
+	public String getName() {
+		return name;
+	}
 
-	void sendTripStatistics(TripStatistics tripStatistics);
+	public String getId() {
+		return id;
+	}
 
-	void sendDemoStatistics();
+	public Resolution getResolution() {
+		return resolution;
+	}
 
-	void clearScreen();
+	@Override
+	public String toString() {
+		return id;
+	}
 
-	void repaint();
-
-	void vibrate();
-
-	WidgetVariant getActiveWidgetVariant();
+	public String getDescription() {
+		return description;
+	}
 
 }

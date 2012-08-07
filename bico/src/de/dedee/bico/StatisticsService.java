@@ -19,7 +19,6 @@ package de.dedee.bico;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -46,6 +45,7 @@ public class StatisticsService extends Service {
 
 	private final Messenger messenger = new Messenger(new IncomingHandler());
 	private final MyTracksServiceStatusReceiver serviceStatusReceiver = new MyTracksServiceStatusReceiver();
+	private final WidgetVariants widgetVariants = new WidgetVariants();
 	private boolean widgetEnabled;
 	private UserInterface ui;
 	private StateContext ctx;
@@ -130,18 +130,21 @@ public class StatisticsService extends Service {
 			} else if (action.equals(IntentConstants.ORG_METAWATCH_MANAGER_REFRESH_WIDGET_REQUEST)) {
 				Log.d(C.TAG, "Widget update requested we resend the previous stats or clear the screen");
 				Bundle bundle = intent.getExtras();
+
 				if (bundle.containsKey(IntentConstants.ORG_METAWATCH_MANAGER_WIDGETS_DESIRED)) {
+					widgetEnabled = false;
 					ArrayList<String> activatedWidgetIds = new ArrayList<String>(Arrays.asList(bundle
 							.getStringArray(IntentConstants.ORG_METAWATCH_MANAGER_WIDGETS_DESIRED)));
 					// Check if widgets_desired contains each widget ID you're responsible for
 					// and send an update
+
+					Log.i(C.TAG, "MWM has configured these widgets: " + activatedWidgetIds);
 					if (activatedWidgetIds != null) {
-						List<Resolution> supportedResolutions = ui.getSupportedResolutions();
-						for (Resolution r : supportedResolutions) {
-							if (activatedWidgetIds.contains(r.getWidgetIdentifier())) {
-								Log.i(C.TAG, r.getWidgetIdentifier()
+						for (WidgetVariant wv : widgetVariants.getVariants()) {
+							if (activatedWidgetIds.contains(wv.getId())) {
+								Log.i(C.TAG, wv.getId()
 										+ " recognized as activated in MWM widget screen, so activating this one");
-								ui.setActiveResolution(r);
+								ui.setActiveWidgetVariant(wv);
 								widgetEnabled = true;
 								break;
 							}
@@ -149,21 +152,29 @@ public class StatisticsService extends Service {
 					}
 					if (widgetEnabled) {
 						Log.i(C.TAG, "Got REFRESH_WIDGET_REQUEST and we are activated");
+					} else {
+						Log.i(C.TAG, "Got REFRESH_WIDGET_REQUEST and we are NOT activated");
 					}
 				}
+
+				// Send an UI update for all possible variants we provide.
 				boolean previewRequested = bundle.containsKey(IntentConstants.ORG_METAWATCH_MANAGER_GET_PREVIEWS);
 				if (previewRequested) {
-					Log.d(C.TAG, "A preview picture is requested, so sending some nice preview");
-					ui.sendDemoStatistics();
+					Log.d(C.TAG, "A preview picture is requested, so sending some nice previews");
+					WidgetVariant previousWidgetVariant = ui.getActiveWidgetVariant();
+					for (WidgetVariant wv : widgetVariants.getVariants()) {
+						Log.i(C.TAG, "Preview for " + wv);
+						ui.setActiveWidgetVariant(wv);
+						ui.sendDemoStatistics();
+					}
+					ui.setActiveWidgetVariant(previousWidgetVariant);
+
 				} else if (widgetEnabled) {
 					ui.repaint();
 				}
 
 			} else if (action.equals(IntentConstants.ORG_METAWATCH_MANAGER_APPLICATION_DISCOVERY)) {
-				Log.d(C.TAG, "Received Discovery request from MWM");
-				// When the MWM app sends the discovery we update the screen once to get it included in the widget list.
-				// Note: We are no MWM app - just a widget. So nothing to announce.
-				ui.repaint();
+				// Just for apps. Not for widgets
 
 			} else if (action.equals(IntentConstants.ORG_METAWATCH_MANAGER_BUTTON_PRESS)) {
 				Log.d(C.TAG, "Received a button event from the MetaWatch. Currently we ignore this");
