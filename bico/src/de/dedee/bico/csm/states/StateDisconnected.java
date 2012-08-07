@@ -29,8 +29,7 @@ public class StateDisconnected extends AbstractState {
 
 	@Override
 	public void work() throws StateExecutionException {
-		// Automatically try to connect
-		// ctx.sendEvent(Event.Connect);
+		// Do nothing
 	}
 
 	@Override
@@ -42,5 +41,10 @@ public class StateDisconnected extends AbstractState {
 		default:
 			return super.handleEvent(evt);
 		}
+	}
+
+	@Override
+	public void enter() {
+		ctx.getUi().clearScreen();
 	}
 }

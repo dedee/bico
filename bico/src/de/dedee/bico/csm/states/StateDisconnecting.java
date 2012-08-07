@@ -19,6 +19,8 @@ package de.dedee.bico.csm.states;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.util.Log;
+import de.dedee.bico.C;
 import de.dedee.bico.R;
 import de.dedee.bico.csm.AbstractState;
 import de.dedee.bico.csm.StateContext;
@@ -38,19 +40,22 @@ public class StateDisconnecting extends AbstractState {
 				R.string.mytracks_service_class));
 		mytracksIntent.setComponent(componentName);
 
-		if (ctx.getData().getMyTracksService() != null) {
+		try {
 			ctx.getAppContext().unbindService(ctx.getData().getServiceConnection());
-			ctx.getAppContext().stopService(mytracksIntent);
+		} catch (Exception e) {
+			Log.w(C.TAG, "Could not unbind service", e);
 		}
+		ctx.sendEvent(Event.Disconnected);
+		// try {
+		// ctx.getAppContext().stopService(mytracksIntent);
+		// } catch (Exception e) {
+		// Log.w(C.TAG, "Could not stop service", e);
+		// }
 	}
 
 	@Override
 	public boolean handleEvent(Event evt) {
 		switch (evt) {
-		case Connected: {
-			ctx.changeTo(ctx.getStates().getStateConnected());
-			return true;
-		}
 		case Disconnected: {
 			ctx.changeTo(ctx.getStates().getStateDisconnected());
 			return true;

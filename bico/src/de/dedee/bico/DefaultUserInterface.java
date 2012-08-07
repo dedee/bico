@@ -50,27 +50,18 @@ public class DefaultUserInterface implements UserInterface {
 
 	private Context context;
 
-	private List<StatisticsInfo> lastStatistics;
+	private TripStatistics lastStatistics;
+	private TripStatistics demoStatistics;
 	private Resolution resolution = DEFAULT_RESOLUTION;
 	private boolean active;
 
-	/**
-	 * @return the active
-	 */
-	public boolean isActive() {
-		return active;
-	}
-
-	/**
-	 * @param active
-	 *            the active to set
-	 */
-	public void setActive(boolean active) {
-		this.active = active;
-	}
-
 	public DefaultUserInterface(Context context) {
 		this.context = context;
+
+		demoStatistics = new TripStatistics();
+		demoStatistics.setMovingTime(25 * 60 * 1000);
+		demoStatistics.setTotalElevationGain(280);
+		demoStatistics.setTotalDistance(10 * 1000);
 	}
 
 	@Override
@@ -92,6 +83,7 @@ public class DefaultUserInterface implements UserInterface {
 
 	@Override
 	public void sendTripStatistics(TripStatistics tripStatistics) {
+		lastStatistics = tripStatistics;
 		List<StatisticsInfo> l = new ArrayList<StatisticsInfo>();
 		if (tripStatistics != null) {
 			double speed = Units.convertSpeed(tripStatistics.getAverageMovingSpeed());
@@ -101,12 +93,15 @@ public class DefaultUserInterface implements UserInterface {
 			l.add(new StatisticsInfo(context.getString(R.string.time), Units.durationToString(tripStatistics
 					.getMovingTime())));
 			l.add(new StatisticsInfo(context.getString(R.string.elevation), Long.toString(elevationGain)));
+			active = true;
+		} else {
+			l.add(new StatisticsInfo(STATUS, context.getString(R.string.notactive)));
+			active = false;
 		}
-		sendStatistics(l);
+		sendStatistics(l, active);
 	}
 
-	private void sendStatistics(List<StatisticsInfo> l) {
-		lastStatistics = l;
+	private void sendStatistics(List<StatisticsInfo> l, boolean active) {
 		Bitmap bitmap = createTextBitmap(context, l);
 		Intent intent = Utils.createWidgetUpdateIntent(bitmap, resolution.getWidgetIdentifier(),
 				resolution.getWidgetDescription(), active ? WIDGET_PRIORITY_ACTIVE : WIDGET_PRIORITY_INACTIVE);
@@ -116,25 +111,16 @@ public class DefaultUserInterface implements UserInterface {
 
 	@Override
 	public void sendDemoStatistics() {
-		TripStatistics ts = new TripStatistics();
-		ts.setMovingTime(25 * 60 * 1000);
-		ts.setTotalElevationGain(280);
-		ts.setTotalDistance(10 * 1000);
-		sendTripStatistics(ts);
+		sendTripStatistics(demoStatistics);
 	}
 
 	public void clearScreen() {
 		// Clear widget screen.
-		List<StatisticsInfo> l = new ArrayList<StatisticsInfo>();
-		l.add(new StatisticsInfo(STATUS, context.getString(R.string.notactive)));
-		sendStatistics(l);
+		sendTripStatistics(null);
 	}
 
 	public void repaint() {
-		if (lastStatistics != null)
-			sendStatistics(lastStatistics);
-		else
-			clearScreen();
+		sendTripStatistics(lastStatistics);
 	}
 
 	public void vibrate() {

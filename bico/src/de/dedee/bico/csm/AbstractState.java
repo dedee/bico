@@ -45,4 +45,12 @@ public abstract class AbstractState implements State {
 			return false;
 		}
 	}
+
+	@Override
+	public void enter() {
+	}
+
+	@Override
+	public void leave() {
+	}
 }

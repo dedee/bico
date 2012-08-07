@@ -26,11 +26,9 @@ public class States {
 	private StateConnecting stateConnecting;
 	private StateConnected stateConnected;
 	private StateEnd stateEnd;
-	private StateIdle stateIdle;
 	private StateUpdatingStatistics stateRecording;
 
 	public States(StateContext ctx) {
-		stateIdle = new StateIdle(ctx);
 		stateDisconnecting = new StateDisconnecting(ctx);
 		stateDisconnected = new StateDisconnected(ctx);
 		stateConnecting = new StateConnecting(ctx);
@@ -57,10 +55,6 @@ public class States {
 
 	public StateEnd getStateEnd() {
 		return stateEnd;
-	}
-
-	public StateIdle getStateIdle() {
-		return stateIdle;
 	}
 
 	public StateUpdatingStatistics getStateUpdatingStatistics() {

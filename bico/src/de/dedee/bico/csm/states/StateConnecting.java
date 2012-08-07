@@ -17,6 +17,7 @@
 
 package de.dedee.bico.csm.states;
 
+import android.app.Service;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.util.Log;
@@ -24,7 +25,6 @@ import de.dedee.bico.C;
 import de.dedee.bico.R;
 import de.dedee.bico.csm.AbstractState;
 import de.dedee.bico.csm.StateContext;
-import de.dedee.bico.csm.StateExecutionException;
 
 public class StateConnecting extends AbstractState {
 
@@ -33,15 +33,17 @@ public class StateConnecting extends AbstractState {
 	}
 
 	@Override
-	public void work() throws StateExecutionException {
+	public void work() {
 		Intent mytracksIntent = new Intent();
 		ComponentName componentName = new ComponentName(ctx.getAppContext()
 				.getString(R.string.mytracks_service_package), ctx.getAppContext().getString(
 				R.string.mytracks_service_class));
 		mytracksIntent.setComponent(componentName);
-		// The startService is req
-		ctx.getAppContext().startService(mytracksIntent);
-		boolean status = ctx.getAppContext().bindService(mytracksIntent, ctx.getData().getServiceConnection(), 0);
+		// // The startService is req
+		// ctx.getAppContext().startService(mytracksIntent);
+		// boolean status = ctx.getAppContext().bindService(mytracksIntent, ctx.getData().getServiceConnection(), 0);
+		boolean status = ctx.getAppContext().bindService(mytracksIntent, ctx.getData().getServiceConnection(),
+				Service.BIND_AUTO_CREATE);
 		Log.d(C.TAG, "Started service via intent... Status: " + status);
 	}
 

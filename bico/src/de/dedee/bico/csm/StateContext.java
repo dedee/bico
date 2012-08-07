@@ -52,13 +52,18 @@ public class StateContext implements Runnable {
 		this.ui = ui;
 		this.appContext = appContext;
 
-		state = states.getStateIdle();
+		state = states.getStateDisconnected();
 
 		thread = new Thread(this);
 	}
 
 	public void changeTo(State newState) {
 		Log.i(C.TAG, "Changing state from " + state + " to " + newState);
+		if (!newState.equals(state)) {
+			state.leave();
+			newState.enter();
+		}
+
 		this.state = newState;
 	}
 
@@ -103,15 +108,17 @@ public class StateContext implements Runnable {
 				}
 
 				Log.i(C.TAG, "Working in state " + state);
-				state.work();
+				try {
+					state.work();
+				} catch (Exception e) {
+					Log.e(C.TAG, "State " + state + " execution error", e);
+				}
 
 				Event event = events.take();
+				Log.d(C.TAG, "Took up event " + event);
 				boolean status = state.handleEvent(event);
 				Log.i(C.TAG, "State " + state + " handled event: " + event + " status:" + status);
 			}
-
-		} catch (StateExecutionException e) {
-			e.printStackTrace();// FIXME
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

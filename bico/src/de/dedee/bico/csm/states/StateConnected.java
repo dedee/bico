@@ -38,10 +38,12 @@ public class StateConnected extends AbstractState {
 				Log.i(C.TAG, "Mytracks is recording currently, so we change status to recording");
 				ctx.sendEvent(Event.UpdateStatistics);
 			} else {
-				Log.i(C.TAG, "Mytracks is not recording currently, so we stay in connected state");
+				Log.i(C.TAG, "Mytracks is not recording currently");
+				ctx.sendEvent(Event.Disconnect);
 			}
 		} catch (RemoteException e) {
 			Log.e(C.TAG, "Could not check if mytracks is recording", e);
+			ctx.sendEvent(Event.Disconnect);
 		}
 	}
 

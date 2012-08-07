@@ -59,14 +59,14 @@ public class StateUpdatingStatistics extends AbstractState {
 							Log.d(C.TAG, "Updating statistics view");
 						}
 					} else {
-						Log.w(C.TAG, "No last track");
+						Log.e(C.TAG, "No last track");
 					}
 
 				} else {
-					Log.w(C.TAG, "Mytracks service is not recording");
+					Log.e(C.TAG, "Mytracks service is not recording");
 				}
 			} else {
-				Log.w(C.TAG, "No mytracks service");
+				Log.e(C.TAG, "No mytracks service");
 			}
 
 			if (updated) {
@@ -75,7 +75,7 @@ public class StateUpdatingStatistics extends AbstractState {
 				timer.schedule(new TimerTask() {
 					@Override
 					public void run() {
-						Log.d(C.TAG, "Sending event UpdateStatistics to myself");
+						Log.i(C.TAG, "Pinging Recording...");
 						ctx.sendEvent(Event.UpdateStatistics);
 					}
 				}, 10 * 1000);
@@ -91,23 +91,40 @@ public class StateUpdatingStatistics extends AbstractState {
 	@Override
 	public boolean handleEvent(Event evt) {
 		switch (evt) {
-		case UpdateStatistics: {
-			return true;
-		}
+
 		case Back: {
 			ctx.changeTo(ctx.getStates().getStateConnected());
 			return true;
 		}
+
+		case UpdateStatistics: {
+			return true;
+		}
+
 		case Disconnect: {
 			ctx.changeTo(ctx.getStates().getStateDisconnecting());
 			return true;
 		}
+
 		case Disconnected: {
 			ctx.changeTo(ctx.getStates().getStateDisconnected());
 			return true;
 		}
-		default:
+
+		default: {
 			return super.handleEvent(evt);
 		}
+
+		}
+	}
+
+	@Override
+	public void enter() {
+		ctx.getUi().vibrate();
+	}
+
+	@Override
+	public void leave() {
+		ctx.getUi().vibrate();
 	}
 }

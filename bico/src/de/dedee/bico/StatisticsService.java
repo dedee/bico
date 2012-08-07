@@ -46,12 +46,8 @@ public class StatisticsService extends Service {
 
 	private final Messenger messenger = new Messenger(new IncomingHandler());
 	private final MyTracksServiceStatusReceiver serviceStatusReceiver = new MyTracksServiceStatusReceiver();
-
 	private boolean widgetEnabled;
-
 	private UserInterface ui;
-	// private MyTracksConnection connection;
-
 	private StateContext ctx;
 
 	@Override
@@ -124,11 +120,11 @@ public class StatisticsService extends Service {
 			String action = intent.getAction();
 
 			if (action.equals(IntentConstants.COM_GOOGLE_ANDROID_APPS_MYTRACKS_TRACK_STARTED)) {
-				Log.d(C.TAG, "The track was started");
+				Log.i(C.TAG, "The track was started");
 				ctx.sendEvent(Event.Connect);
 
 			} else if (action.equals(IntentConstants.COM_GOOGLE_ANDROID_APPS_MYTRACKS_TRACK_STOPPED)) {
-				Log.d(C.TAG, "The track was stopped");
+				Log.i(C.TAG, "The track was stopped");
 				ctx.sendEvent(Event.Disconnect);
 
 			} else if (action.equals(IntentConstants.ORG_METAWATCH_MANAGER_REFRESH_WIDGET_REQUEST)) {

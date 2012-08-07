@@ -27,4 +27,8 @@ public interface State {
 
 	boolean handleEvent(Event evt);
 
+	void enter();
+
+	void leave();
+
 }
