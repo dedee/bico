@@ -15,7 +15,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.1 "
-   sodipodi:docname="Neues Dokument 1">
+   sodipodi:docname="screendesign_text.svg">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -26,7 +26,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
-     inkscape:cx="73.782799"
+     inkscape:cx="133.67289"
      inkscape:cy="707.2921"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -53,8 +53,8 @@
      inkscape:groupmode="layer"
      id="layer1">
     <image
-       y="254.17418"
-       x="197.7818"
+       y="72.346718"
+       x="80.604103"
        id="image2997"
        xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJ4AAACmCAIAAACkzqHsAAAAA3NCSVQICAjb4U/gAAAgAElEQVR4
 nO29a6xlx3UmtlZV7dd53r739psU2XzJpEhR1oPieCCFGckyEIxGk2CSeP4oyY/AGCBxkPxIYmA0
@@ -312,55 +312,116 @@ xy0n3HbfG3EymfjahycYyxYFEeU2Kwlka20S7BpjiEjyouQL94/zXHrqD1LhJrIWrAXGwFp4773L
 SZJQs5BRa+ctw6kaFQq3iwDOfPXUntTvKQV9FEWcL9LU/n+dCgKpNzsNQwAAAABJRU5ErkJggg==
 "
        height="166"
-       width="158" />
+       width="158"
+       inkscape:export-filename="C:\Users\dd\git\bico\bico\doc\text3956.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
     <text
        xml:space="preserve"
        style="font-size:27.13272285px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
-       x="237.32784"
-       y="309.93982"
+       x="120.15014"
+       y="128.11237"
        id="text2985"
-       sodipodi:linespacing="125%"><tspan
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\Users\dd\git\bico\bico\doc\text3956.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
          sodipodi:role="line"
          id="tspan2987"
-         x="237.32784"
-         y="309.93982"
+         x="120.15014"
+         y="128.11237"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:MetaWatch Large 16pt;-inkscape-font-specification:MetaWatch Large 16pt">9:32:39</tspan></text>
     <rect
        style="fill:#d0d0d0;fill-opacity:1;stroke:none"
        id="rect3002"
        width="96"
        height="32"
-       x="-325.66299"
-       y="318.92752"
+       x="-208.48531"
+       y="137.10007"
        rx="242.33189"
        ry="0"
-       transform="scale(-1,1)" />
+       transform="scale(-1,1)"
+       inkscape:export-filename="C:\Users\dd\git\bico\bico\doc\text3956.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
     <text
        xml:space="preserve"
        style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
-       x="232.81984"
-       y="320.04218"
+       x="115.64214"
+       y="138.21472"
        id="text3956"
-       sodipodi:linespacing="125%"><tspan
+       sodipodi:linespacing="125%"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
          sodipodi:role="line"
          id="tspan3958"
-         x="232.81984"
-         y="320.04218"
+         x="115.64214"
+         y="138.21472"
          style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:MetaWatch Small caps 8pt;-inkscape-font-specification:MetaWatch Small caps 8pt">STATUS: LAST TRACK</tspan><tspan
          sodipodi:role="line"
-         x="232.81984"
-         y="330.04218"
+         x="115.64214"
+         y="148.21472"
          style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:MetaWatch Small caps 8pt;-inkscape-font-specification:MetaWatch Small caps 8pt"
          id="tspan3960">AVG SPEED: 24,2</tspan><tspan
          sodipodi:role="line"
-         x="232.81984"
-         y="340.04218"
+         x="115.64214"
+         y="158.21472"
          style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:MetaWatch Small caps 8pt;-inkscape-font-specification:MetaWatch Small caps 8pt"
          id="tspan3962">TIME: 00:59</tspan><tspan
          sodipodi:role="line"
-         x="232.81984"
-         y="350.04218"
+         x="115.64214"
+         y="168.21472"
          style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:MetaWatch Small caps 8pt;-inkscape-font-specification:MetaWatch Small caps 8pt"
          id="tspan3964">ALT: 319</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#cccccc;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="251.52795"
+       y="97.747704"
+       id="text3966"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3968"
+         x="251.52795"
+         y="97.747704"
+         style="font-size:32px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#cccccc;font-family:Sans;-inkscape-font-specification:Sans Bold">BIKE COMPUTER</tspan><tspan
+         sodipodi:role="line"
+         x="251.52795"
+         y="137.7477"
+         id="tspan3970" /></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3978"
+       style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Bitstream Vera Sans;font-style:normal;font-weight:normal;font-size:40px;line-height:125%;letter-spacing:0px;word-spacing:0px"><flowRegion
+         id="flowRegion3980"><rect
+           id="rect3982"
+           width="276.7818"
+           height="56.568542"
+           x="272.74118"
+           y="83.625893" /></flowRegion><flowPara
+         id="flowPara3984"></flowPara></flowRoot>    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="248.49753"
+       y="219.97618"
+       id="text3986"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3988"
+         x="248.49753"
+         y="219.97618"
+         style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Impact;-inkscape-font-specification:Impact">BICO</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#808080;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="252.53813"
+       y="235.23001"
+       id="text3990"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3992"
+         x="252.53813"
+         y="235.23001"
+         style="font-size:14px;fill:#808080">Open Source https://github.com/dedee/bico</tspan></text>
   </g>
 </svg>
