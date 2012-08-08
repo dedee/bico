@@ -43,7 +43,7 @@ public interface UserInterface {
 	// */
 	// Resolution getActiveResolution();
 
-	void sendTripStatistics(TripStatistics tripStatistics);
+	void sendTripStatistics(TripStatistics tripStatistics, String title);
 
 	void sendDemoStatistics();
 

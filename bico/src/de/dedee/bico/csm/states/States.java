@@ -60,4 +60,5 @@ public class States {
 	public StateUpdatingStatistics getStateUpdatingStatistics() {
 		return stateRecording;
 	}
+
 }

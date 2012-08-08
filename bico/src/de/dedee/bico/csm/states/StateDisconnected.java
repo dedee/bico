@@ -17,6 +17,13 @@
 
 package de.dedee.bico.csm.states;
 
+import android.util.Log;
+
+import com.google.android.apps.mytracks.content.MyTracksProviderUtils;
+import com.google.android.apps.mytracks.content.Track;
+import com.google.android.apps.mytracks.stats.TripStatistics;
+
+import de.dedee.bico.C;
 import de.dedee.bico.csm.AbstractState;
 import de.dedee.bico.csm.StateContext;
 import de.dedee.bico.csm.StateExecutionException;
@@ -30,6 +37,32 @@ public class StateDisconnected extends AbstractState {
 	@Override
 	public void work() throws StateExecutionException {
 		// Do nothing
+		TripStatistics tripStatistics = null;
+		try {
+			// Check if MyTracks is recording now. If not, change state to connected.
+			if (ctx.getData().getMyTracksService() != null) {
+
+				MyTracksProviderUtils myTracksProviderUtils = MyTracksProviderUtils.Factory.get(ctx.getAppContext());
+				// Read latest statistics
+				Track track = myTracksProviderUtils.getLastTrack();
+				if (track != null) {
+					tripStatistics = track.getTripStatistics();
+				} else {
+					Log.e(C.TAG, "No last track");
+				}
+			} else {
+				Log.e(C.TAG, "No mytracks service");
+			}
+		} catch (Exception e) {
+			throw new StateExecutionException("Could not check mytracks servcice recording state", e);
+		}
+
+		if (tripStatistics != null) {
+			ctx.getUi().sendTripStatistics(tripStatistics, "Last Track");
+			Log.d(C.TAG, "Updating statistics view");
+		} else {
+			ctx.getUi().clearScreen();
+		}
 	}
 
 	@Override
@@ -43,8 +76,4 @@ public class StateDisconnected extends AbstractState {
 		}
 	}
 
-	@Override
-	public void enter() {
-		ctx.getUi().clearScreen();
-	}
 }

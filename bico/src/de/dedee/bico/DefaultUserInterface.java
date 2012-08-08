@@ -57,8 +57,8 @@ public class DefaultUserInterface implements UserInterface {
 	}
 
 	@Override
-	public void sendTripStatistics(TripStatistics tripStatistics) {
-		sendStatistics(convertTripStatistics(tripStatistics), WIDGET_PRIORITY_ACTIVE);
+	public void sendTripStatistics(TripStatistics tripStatistics, String title) {
+		sendStatistics(convertTripStatistics(tripStatistics, title), WIDGET_PRIORITY_ACTIVE);
 	}
 
 	private void sendStatistics(List<StatisticsInfo> l, int widgetPrio) {
@@ -79,12 +79,11 @@ public class DefaultUserInterface implements UserInterface {
 
 	@Override
 	public void sendDemoStatistics() {
-		List<StatisticsInfo> l = new ArrayList<StatisticsInfo>();
-		l.add(new StatisticsInfo(context.getString(R.string.status), "DEMO"));
-		l.add(new StatisticsInfo(context.getString(R.string.avgspeed), "24"));
-		l.add(new StatisticsInfo(context.getString(R.string.time), "1234"));
-		l.add(new StatisticsInfo(context.getString(R.string.elevation), "1234"));
-		sendStatistics(l, WIDGET_PRIORITY_ACTIVE);
+		TripStatistics demoStatistics = new TripStatistics();
+		demoStatistics.setTotalElevationGain(1234);
+		demoStatistics.setTotalDistance(25.6 * 1000);
+		demoStatistics.setMovingTime(1000 * 60 * 45);
+		sendTripStatistics(demoStatistics, "Demo");
 	}
 
 	public void clearScreen() {
@@ -108,12 +107,12 @@ public class DefaultUserInterface implements UserInterface {
 		context.sendBroadcast(broadcast);
 	}
 
-	private List<StatisticsInfo> convertTripStatistics(TripStatistics ts) {
+	private List<StatisticsInfo> convertTripStatistics(TripStatistics ts, String title) {
 		List<StatisticsInfo> l = new ArrayList<StatisticsInfo>();
 		if (ts != null) {
 			double speed = Units.convertSpeed(ts.getAverageMovingSpeed());
 			long elevationGain = (long) Units.convertElevationGain(ts.getTotalElevationGain());
-			l.add(new StatisticsInfo(context.getString(R.string.status), context.getString(R.string.active)));
+			l.add(new StatisticsInfo(context.getString(R.string.status), title));
 			l.add(new StatisticsInfo(context.getString(R.string.avgspeed), String.format("%.1f", speed)));
 			l.add(new StatisticsInfo(context.getString(R.string.time), Units.durationToString(ts.getMovingTime())));
 			l.add(new StatisticsInfo(context.getString(R.string.elevation), Long.toString(elevationGain)));

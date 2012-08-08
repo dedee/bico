@@ -34,9 +34,14 @@ public class StateConnected extends AbstractState {
 	public void work() throws StateExecutionException {
 		// Check if MyTracks is recording now
 		try {
-			if (ctx.getData().getMyTracksService() != null && ctx.getData().getMyTracksService().isRecording()) {
-				Log.i(C.TAG, "Mytracks is recording currently, so we change status to recording");
-				ctx.sendEvent(Event.UpdateStatistics);
+			if (ctx.getData().getMyTracksService() != null) {
+				if (ctx.getData().getMyTracksService().isRecording()) {
+					Log.i(C.TAG, "Mytracks is recording currently, so we change status to recording");
+					ctx.sendEvent(Event.UpdateStatistics);
+				} else {
+					Log.i(C.TAG, "Mytracks is not recording currently");
+					ctx.sendEvent(Event.Disconnect);
+				}
 			} else {
 				Log.i(C.TAG, "Mytracks is not recording currently");
 				ctx.sendEvent(Event.Disconnect);
@@ -66,4 +71,5 @@ public class StateConnected extends AbstractState {
 			return super.handleEvent(evt);
 		}
 	}
+
 }

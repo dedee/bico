@@ -62,4 +62,14 @@ public class ContextData {
 			ctx.sendEvent(Event.Disconnected);
 		}
 	};
+
+	private boolean previousTrackStatisticsUpdatedOnce;
+
+	public boolean isPreviousTrackStatisticsUpdatedOnce() {
+		return previousTrackStatisticsUpdatedOnce;
+	}
+
+	public void setPreviousTrackStatisticsUpdatedOnce(boolean previousTrackStatisticsUpdatedOnce) {
+		this.previousTrackStatisticsUpdatedOnce = previousTrackStatisticsUpdatedOnce;
+	}
 }

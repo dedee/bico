@@ -54,7 +54,7 @@ public class StateUpdatingStatistics extends AbstractState {
 					if (track != null) {
 						tripStatistics = track.getTripStatistics();
 						if (tripStatistics != null) {
-							ctx.getUi().sendTripStatistics(tripStatistics);
+							ctx.getUi().sendTripStatistics(tripStatistics, "ACTIVE");
 							updated = true;
 							Log.d(C.TAG, "Updating statistics view");
 						}
