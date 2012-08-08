@@ -41,7 +41,7 @@ import de.dedee.bico.csm.states.Event;
  * 
  * @author dedee
  */
-public class StatisticsService extends Service {
+public class BicoService extends Service {
 
 	private final Messenger messenger = new Messenger(new IncomingHandler());
 	private final MyTracksServiceStatusReceiver serviceStatusReceiver = new MyTracksServiceStatusReceiver();

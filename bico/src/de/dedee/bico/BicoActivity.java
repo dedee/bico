@@ -24,13 +24,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
-public class MyTracksMetaWatchActivity extends Activity {
+public class BicoActivity extends Activity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		startService(new Intent(this, StatisticsService.class));
+		startService(new Intent(this, BicoService.class));
 		try {
 			String version = getPackageManager().getPackageInfo(
 					getPackageName(), 0).versionName;
