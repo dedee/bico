@@ -15,9 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.dedee.bico;
+package de.dedee.bico.ui;
 
 import java.util.Locale;
+
+import de.dedee.bico.C;
 
 import android.util.Log;
 

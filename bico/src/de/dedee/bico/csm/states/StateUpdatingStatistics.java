@@ -120,11 +120,11 @@ public class StateUpdatingStatistics extends AbstractState {
 
 	@Override
 	public void enter() {
-		ctx.getUi().vibrate();
+		ctx.vibrate();
 	}
 
 	@Override
 	public void leave() {
-		ctx.getUi().vibrate();
+		ctx.vibrate();
 	}
 }

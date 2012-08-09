@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.dedee.bico;
+package de.dedee.bico.ui;
 
 /**
  * Contains one Widget Resolution information.

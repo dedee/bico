@@ -15,33 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.dedee.bico;
+package de.dedee.bico.ui;
 
 import com.google.android.apps.mytracks.stats.TripStatistics;
 
 public interface UserInterface {
-
-	/**
-	 * Returns a list of supported resolutions (e.g. 96x32, etc.).
-	 * 
-	 * @return List of supported resolutions
-	 */
-	// List<Resolution> getSupportedResolutions();
-
-	/**
-	 * Configures which variant shall be used.
-	 * 
-	 * @param wv
-	 *            Active variant
-	 */
-	void setActiveWidgetVariant(WidgetVariant wv);
-
-	// /**
-	// * Returns active resolution.
-	// *
-	// * @return Active resolution
-	// */
-	// Resolution getActiveResolution();
 
 	void sendTripStatistics(TripStatistics tripStatistics, String title);
 
@@ -50,9 +28,5 @@ public interface UserInterface {
 	void clearScreen();
 
 	void repaint();
-
-	void vibrate();
-
-	WidgetVariant getActiveWidgetVariant();
 
 }

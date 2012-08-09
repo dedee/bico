@@ -58,9 +58,10 @@ public class StateDisconnected extends AbstractState {
 		}
 
 		if (tripStatistics != null) {
+			Log.d(C.TAG, "Updating statistics view with last track");
 			ctx.getUi().sendTripStatistics(tripStatistics, "Last Track");
-			Log.d(C.TAG, "Updating statistics view");
 		} else {
+			Log.d(C.TAG, "No last track available, clearing screen");
 			ctx.getUi().clearScreen();
 		}
 	}

@@ -15,26 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.dedee.bico;
+package de.dedee.bico.theme;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.content.Context;
+import de.dedee.bico.ui.Resolution;
 
-public class WidgetVariants {
+public class ThemeFactory {
 
-	public List<WidgetVariant> getVariants() {
-		List<WidgetVariant> l = new ArrayList<WidgetVariant>();
-
-		// FIXME: Multiple variants don't work currently. There is no real guarantee that we always know which variant
-		// is activated.
-
-		l.add(new WidgetVariant("bico text small", new Resolution(96, 32), "bico text small"));
-		// l.add(new WidgetVariant("bico text large", new Resolution(96, 64), "bico text large"));
-
-		return l;
+	public static Theme createTheme(Context context, Resolution resolution, String themeId) {
+		return new DefaultTheme(context, resolution);
 	}
 
-	public WidgetVariant getDefault() {
-		return getVariants().get(0);
-	}
 }

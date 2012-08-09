@@ -33,6 +33,8 @@ import android.os.Messenger;
 import android.util.Log;
 import de.dedee.bico.csm.StateContext;
 import de.dedee.bico.csm.states.Event;
+import de.dedee.bico.ui.WidgetVariant;
+import de.dedee.bico.ui.WidgetVariants;
 
 /**
  * Main background service which itself connects to the MyTracks service and captures all the statistics data whenever a
@@ -45,9 +47,7 @@ public class BicoService extends Service {
 
 	private final Messenger messenger = new Messenger(new IncomingHandler());
 	private final MyTracksServiceStatusReceiver serviceStatusReceiver = new MyTracksServiceStatusReceiver();
-	private final WidgetVariants widgetVariants = new WidgetVariants();
-	private boolean widgetEnabled;
-	private UserInterface ui;
+	private WidgetVariants widgetVariants;
 	private StateContext ctx;
 
 	@Override
@@ -55,9 +55,9 @@ public class BicoService extends Service {
 		super.onCreate();
 		Log.d(C.TAG, "Service created");
 
-		ui = new DefaultUserInterface(this);
-		// connection = new MyTracksConnection(this, ui);
-		ctx = new StateContext(this, ui);
+		widgetVariants = new WidgetVariants(this);
+
+		ctx = new StateContext(this, widgetVariants);
 		ctx.start();
 		ctx.sendEvent(Event.Connect);
 
@@ -74,7 +74,7 @@ public class BicoService extends Service {
 	@Override
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
-		ui.clearScreen();
+		widgetVariants.clearScreen();
 		Log.d(C.TAG, "Service started");
 	}
 
@@ -132,24 +132,8 @@ public class BicoService extends Service {
 				Bundle bundle = intent.getExtras();
 
 				if (bundle.containsKey(IntentConstants.ORG_METAWATCH_MANAGER_WIDGETS_DESIRED)) {
-					widgetEnabled = false;
-					ArrayList<String> activatedWidgetIds = new ArrayList<String>(Arrays.asList(bundle
-							.getStringArray(IntentConstants.ORG_METAWATCH_MANAGER_WIDGETS_DESIRED)));
-					// Check if widgets_desired contains each widget ID you're responsible for
-					// and send an update
-
-					Log.i(C.TAG, "MWM has configured these widgets: " + activatedWidgetIds);
-					if (activatedWidgetIds != null) {
-						for (WidgetVariant wv : widgetVariants.getVariants()) {
-							if (activatedWidgetIds.contains(wv.getId())) {
-								Log.i(C.TAG, wv.getId()
-										+ " recognized as activated in MWM widget screen, so activating this one");
-								ui.setActiveWidgetVariant(wv);
-								widgetEnabled = true;
-								break;
-							}
-						}
-					}
+					boolean widgetEnabled = widgetVariants.activatePerIdList(new ArrayList<String>(Arrays.asList(bundle
+							.getStringArray(IntentConstants.ORG_METAWATCH_MANAGER_WIDGETS_DESIRED))));
 					if (widgetEnabled) {
 						Log.i(C.TAG, "Got REFRESH_WIDGET_REQUEST and we are activated");
 					} else {
@@ -161,16 +145,14 @@ public class BicoService extends Service {
 				boolean previewRequested = bundle.containsKey(IntentConstants.ORG_METAWATCH_MANAGER_GET_PREVIEWS);
 				if (previewRequested) {
 					Log.d(C.TAG, "A preview picture is requested, so sending some nice previews");
-					WidgetVariant previousWidgetVariant = ui.getActiveWidgetVariant();
 					for (WidgetVariant wv : widgetVariants.getVariants()) {
-						Log.i(C.TAG, "Preview for " + wv);
-						ui.setActiveWidgetVariant(wv);
-						ui.sendDemoStatistics();
+						if (wv.isActive()) {
+							Log.i(C.TAG, "Preview for " + wv);
+							wv.getUi().sendDemoStatistics();
+						}
 					}
-					ui.setActiveWidgetVariant(previousWidgetVariant);
-
-				} else if (widgetEnabled) {
-					ui.repaint();
+				} else if (widgetVariants.isActive()) {
+					widgetVariants.repaint();
 				}
 
 			} else if (action.equals(IntentConstants.ORG_METAWATCH_MANAGER_APPLICATION_DISCOVERY)) {

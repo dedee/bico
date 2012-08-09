@@ -15,7 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.dedee.bico;
+package de.dedee.bico.ui;
+
+import android.content.Context;
 
 public class WidgetVariant {
 
@@ -23,16 +25,19 @@ public class WidgetVariant {
 	private Resolution resolution;
 	private String name;
 	private String description;
+	private boolean active;
+	private UserInterface ui;
 
 	/**
 	 * @param id
 	 * @param resolution
 	 */
-	public WidgetVariant(String name, Resolution resolution, String description) {
+	public WidgetVariant(String name, Resolution resolution, String description, Context context) {
 		this.name = name;
 		this.resolution = resolution;
 		this.description = name + " (" + resolution.getWidth() + "x" + resolution.getHeight() + ")";
 		this.id = this.description.replace(' ', '_');
+		this.ui = new DefaultUserInterface(context, this, "FIXME");
 	}
 
 	public String getName() {
@@ -47,13 +52,25 @@ public class WidgetVariant {
 		return resolution;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
 	@Override
 	public String toString() {
 		return id;
 	}
 
-	public String getDescription() {
-		return description;
+	public UserInterface getUi() {
+		return ui;
 	}
 
 }

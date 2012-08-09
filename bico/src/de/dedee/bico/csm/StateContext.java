@@ -21,11 +21,13 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import de.dedee.bico.C;
-import de.dedee.bico.UserInterface;
 import de.dedee.bico.csm.states.Event;
 import de.dedee.bico.csm.states.States;
+import de.dedee.bico.ui.UserInterface;
 
 /**
  * Event driven Finite State Machine.
@@ -144,6 +146,16 @@ public class StateContext implements Runnable {
 
 	public UserInterface getUi() {
 		return ui;
+	}
+
+	public void vibrate() {
+		Intent broadcast = new Intent("org.metawatch.manager.VIBRATE");
+		Bundle b = new Bundle();
+		b.putInt("vibrate_on", 200);
+		b.putInt("vibrate_off", 200);
+		b.putInt("vibrate_cycles", 2);
+		broadcast.putExtras(b);
+		getAppContext().sendBroadcast(broadcast);
 	}
 
 }
