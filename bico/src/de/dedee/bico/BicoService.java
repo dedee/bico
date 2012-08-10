@@ -33,7 +33,6 @@ import android.os.Messenger;
 import android.util.Log;
 import de.dedee.bico.csm.StateContext;
 import de.dedee.bico.csm.states.Event;
-import de.dedee.bico.ui.WidgetVariant;
 import de.dedee.bico.ui.WidgetVariants;
 
 /**
@@ -145,13 +144,8 @@ public class BicoService extends Service {
 				// Send an UI update for all possible variants we provide.
 				boolean previewRequested = bundle.containsKey(IntentConstants.ORG_METAWATCH_MANAGER_GET_PREVIEWS);
 				if (previewRequested) {
-					Log.d(C.TAG, "A preview picture is requested, so sending some nice previews");
-					for (WidgetVariant wv : widgetVariants.getVariants()) {
-						if (wv.isActive()) {
-							Log.i(C.TAG, "Preview for " + wv);
-							wv.getUi().sendDemoStatistics();
-						}
-					}
+					Log.d(C.TAG, "A preview picture is requested, so sending some nice previews for all widgets");
+					widgetVariants.sendDemoStatistics();
 				} else if (widgetVariants.isActive()) {
 					widgetVariants.repaint();
 				}

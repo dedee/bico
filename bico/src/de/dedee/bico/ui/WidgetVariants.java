@@ -41,7 +41,7 @@ public class WidgetVariants implements UserInterface {
 
 		// FIXME: Multiple variants don't work currently. There is no real guarantee that we always know which variant
 		// is activated.
-		// variants.add(new WidgetVariant("bico text small", new Resolution(96, 32), "bico text small", context));
+		variants.add(new WidgetVariant("bico text small", new Resolution(96, 32), "bico text small", context));
 		variants.add(new WidgetVariant("bico text large", new Resolution(96, 64), "bico text large", context));
 
 		load();
@@ -126,15 +126,9 @@ public class WidgetVariants implements UserInterface {
 
 	@Override
 	public void sendDemoStatistics() {
-		if (isActive()) {
-			for (WidgetVariant wv : getVariants()) {
-				if (wv.isActive()) {
-					Log.d(C.TAG, "Sending demo statistics to widget " + wv.getId());
-					wv.getUi().sendDemoStatistics();
-				}
-			}
-		} else {
-			Log.d(C.TAG, "No widget active. Skipping sendDemoStatistics");
+		for (WidgetVariant wv : getVariants()) {
+			Log.d(C.TAG, "Sending demo statistics to widget " + wv.getId());
+			wv.getUi().sendDemoStatistics();
 		}
 	}
 

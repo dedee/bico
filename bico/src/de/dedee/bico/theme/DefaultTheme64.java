@@ -38,6 +38,7 @@ public class DefaultTheme64 implements Theme {
 	private Context context;
 	private Paint paintSmall;
 	private Paint paintLarge;
+	private Paint paintLine;
 
 	public DefaultTheme64(Context context, Resolution resolution) {
 		this.context = context;
@@ -55,10 +56,14 @@ public class DefaultTheme64 implements Theme {
 		paintSmall.setColor(Color.BLACK);
 		paintSmall.setTextSize(8);
 		paintSmall.setTypeface(typefaceSmall);
+
 		paintLarge = new Paint();
 		paintLarge.setColor(Color.BLACK);
 		paintLarge.setTextSize(16);
 		paintLarge.setTypeface(typefaceLarge);
+
+		paintLine = new Paint();
+		paintLine.setColor(Color.BLACK);
 	}
 
 	@Override
@@ -71,8 +76,9 @@ public class DefaultTheme64 implements Theme {
 
 		if (data != null) {
 			// TITLE
+			yoffset += 2;
 			rowHeight = drawHeader(context.getString(R.string.status) + ": " + data.getTitle(), yoffset);
-			yoffset += rowHeight + 5;
+			yoffset += rowHeight + 2;
 
 			switch (mode) {
 			case Recording:
@@ -80,16 +86,26 @@ public class DefaultTheme64 implements Theme {
 				// Log.d(C.TAG, "Updating bitmap data mode: " + mode + " data: " + data);
 
 				// Average speed
-				rowHeight = drawRow(data.getAverageSpeed(), yoffset);
-				yoffset += rowHeight + 5;
+				canvas.drawLine(0, yoffset, 96, yoffset, paintLine);
+				yoffset += 2;
+				rowHeight = drawRow(R.string.avgspeed, data.getAverageSpeed(), yoffset);
+				yoffset += rowHeight;
 
 				// Moving time
-				rowHeight = drawRow(data.getMovingTime(), yoffset);
-				yoffset += rowHeight + 5;
+				yoffset += 2;
+				canvas.drawLine(0, yoffset, 96, yoffset, paintLine);
+				yoffset += 2;
+				rowHeight = drawRow(R.string.time, data.getMovingTime(), yoffset);
+				yoffset += rowHeight;
 
 				// Elevation gain
-				rowHeight = drawRow(data.getElevationGain(), yoffset);
-				yoffset += rowHeight + 5;
+				yoffset += 2;
+				canvas.drawLine(0, yoffset, 96, yoffset, paintLine);
+				yoffset += 2;
+				rowHeight = drawRow(R.string.elevation, data.getElevationGain(), yoffset);
+				yoffset += rowHeight;
+				yoffset += 2;
+				canvas.drawLine(0, yoffset, 96, yoffset, paintLine);
 
 				break;
 			}
@@ -105,8 +121,8 @@ public class DefaultTheme64 implements Theme {
 		return bitmap;
 	}
 
-	private int drawRow(UpdateValue v, int yoffset) {
-		int headerHeight = drawHeader(context.getString(R.string.avgspeed), yoffset);
+	private int drawRow(int textId, UpdateValue v, int yoffset) {
+		int headerHeight = drawHeader(context.getString(textId), yoffset);
 		int valueHeight = drawValue(v.getValue(), yoffset);
 		drawUnit(v.getUnit(), yoffset, headerHeight);
 		return valueHeight;
