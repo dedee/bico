@@ -20,9 +20,9 @@ package de.dedee.bico.theme;
 public class UpdateData {
 
 	private String title;
-	private String averageSpeed;
-	private String movingTime;
-	private String elevationGain;
+	private UpdateValue averageSpeed;
+	private UpdateValue movingTime;
+	private UpdateValue elevationGain;
 
 	public String getTitle() {
 		return title;
@@ -32,27 +32,27 @@ public class UpdateData {
 		this.title = title;
 	}
 
-	public String getAverageSpeed() {
+	public UpdateValue getAverageSpeed() {
 		return averageSpeed;
 	}
 
-	public void setAverageSpeed(String averageSpeed) {
+	public void setAverageSpeed(UpdateValue averageSpeed) {
 		this.averageSpeed = averageSpeed;
 	}
 
-	public String getMovingTime() {
+	public UpdateValue getMovingTime() {
 		return movingTime;
 	}
 
-	public void setMovingTime(String movingTime) {
+	public void setMovingTime(UpdateValue movingTime) {
 		this.movingTime = movingTime;
 	}
 
-	public String getElevationGain() {
+	public UpdateValue getElevationGain() {
 		return elevationGain;
 	}
 
-	public void setElevationGain(String elevationGain) {
+	public void setElevationGain(UpdateValue elevationGain) {
 		this.elevationGain = elevationGain;
 	}
 

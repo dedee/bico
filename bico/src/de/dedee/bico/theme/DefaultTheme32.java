@@ -28,7 +28,7 @@ import de.dedee.bico.C;
 import de.dedee.bico.R;
 import de.dedee.bico.ui.Resolution;
 
-public class DefaultTheme implements Theme {
+public class DefaultTheme32 implements Theme {
 
 	private static final int FONT_SIZE = 8;
 	private static final String FONT_NAME = "metawatch_8pt_5pxl_CAPS.ttf";
@@ -37,7 +37,7 @@ public class DefaultTheme implements Theme {
 	private Canvas canvas;
 	private Context context;
 
-	public DefaultTheme(Context context, Resolution resolution) {
+	public DefaultTheme32(Context context, Resolution resolution) {
 		this.context = context;
 		typeface = Typeface.createFromAsset(context.getAssets(), FONT_NAME);
 		bitmap = Bitmap.createBitmap(resolution.getWidth(), resolution.getHeight(), Bitmap.Config.RGB_565);
@@ -70,17 +70,17 @@ public class DefaultTheme implements Theme {
 			case Demo: {
 				Log.d(C.TAG, "Updating bitmap data mode: " + mode + " data: " + data);
 				// Average speed
-				text = context.getString(R.string.avgspeed) + " : " + data.getAverageSpeed();
+				text = context.getString(R.string.avgspeed) + " : " + data.getAverageSpeed().getValue();
 				canvas.drawText(text, xoffset, yoffset, paint);
 				yoffset += yincrement;
 
 				// Moving time
-				text = context.getString(R.string.time) + " : " + data.getMovingTime();
+				text = context.getString(R.string.time) + " : " + data.getMovingTime().getValue();
 				canvas.drawText(text, xoffset, yoffset, paint);
 				yoffset += yincrement;
 
 				// Elevation gain
-				text = context.getString(R.string.elevation) + " : " + data.getElevationGain();
+				text = context.getString(R.string.elevation) + " : " + data.getElevationGain().getValue();
 				canvas.drawText(text, xoffset, yoffset, paint);
 				yoffset += yincrement;
 				break;

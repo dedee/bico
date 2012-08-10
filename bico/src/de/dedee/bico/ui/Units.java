@@ -19,9 +19,9 @@ package de.dedee.bico.ui;
 
 import java.util.Locale;
 
-import de.dedee.bico.C;
-
 import android.util.Log;
+import de.dedee.bico.C;
+import de.dedee.bico.theme.UpdateValue;
 
 public class Units {
 	private static final String countryCode = Locale.getDefault().getISO3Country().toUpperCase();
@@ -30,20 +30,20 @@ public class Units {
 		Log.i(C.TAG, "Using " + (isMetric() ? "metric" : "imperial") + " units, countryCode is " + countryCode);
 	}
 
-	public static double convertElevationGain(double elevationGainInMeters) {
+	public static UpdateValue convertElevationGain(double elevationGainInMeters) {
 		if (isMetric()) {
-			return elevationGainInMeters;
+			return new UpdateValue(Long.toString((long) elevationGainInMeters), "m");
 		} else {
 			// Return in feet
-			return elevationGainInMeters * 3.2808399;
+			return new UpdateValue(Long.toString((long) (elevationGainInMeters * 3.2808399)), "feet");
 		}
 	}
 
-	public static double convertSpeed(double speedMeterPerSeconds) {
+	public static UpdateValue convertSpeed(double speedMeterPerSeconds) {
 		if (isMetric()) {
-			return speedMeterPerSeconds * 3.6;
+			return new UpdateValue(String.format("%.1f", speedMeterPerSeconds * 3.6), "km/h");
 		} else {
-			return speedMeterPerSeconds * 2.23693629;
+			return new UpdateValue(String.format("%.1f", speedMeterPerSeconds * 2.23693629), "mph");
 		}
 	}
 
@@ -57,7 +57,7 @@ public class Units {
 		return metric;
 	}
 
-	public final static String durationToString(long durationInMillis) {
+	public final static UpdateValue durationToString(long durationInMillis) {
 		// hh:mm
 		long minutes = durationInMillis / 1000 / 60;
 		long h = minutes / 60;
@@ -76,6 +76,6 @@ public class Units {
 			sb.append('0');
 		sb.append(s_m);
 
-		return sb.toString();
+		return new UpdateValue(sb.toString(),"");
 	}
 }

@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
 import com.google.android.apps.mytracks.stats.TripStatistics;
@@ -30,16 +32,19 @@ import de.dedee.bico.C;
 public class WidgetVariants implements UserInterface {
 
 	List<WidgetVariant> variants;
+	private Context context;
+	private Stats lastStats;
 
 	public WidgetVariants(Context context) {
+		this.context = context;
 		variants = new ArrayList<WidgetVariant>();
+
 		// FIXME: Multiple variants don't work currently. There is no real guarantee that we always know which variant
 		// is activated.
-		variants.add(new WidgetVariant("bico text small", new Resolution(96, 32), "bico text small", context));
-		// variants.add(new WidgetVariant("bico text large", new Resolution(96, 64), "bico text large"));
+		// variants.add(new WidgetVariant("bico text small", new Resolution(96, 32), "bico text small", context));
+		variants.add(new WidgetVariant("bico text large", new Resolution(96, 64), "bico text large", context));
 
-		// Hack: We dont get the activate always from MWM.
-		variants.get(0).setActive(true);
+		load();
 	}
 
 	public List<WidgetVariant> getVariants() {
@@ -56,20 +61,34 @@ public class WidgetVariants implements UserInterface {
 	public boolean activatePerIdList(ArrayList<String> activatedWidgetIds) {
 		// This boolean signals that at least one widget is activated. If false bico is inactive at all.
 		boolean bicoActive = false;
+
+		// We need to check something changed. In this case we should persist the new status
+		boolean changed = false;
+
 		// Check if widgets_desired contains each widget ID you're responsible for
 		// and send an update
-		Log.i(C.TAG, "MWM has configured these widgets: " + activatedWidgetIds);
+		Log.d(C.TAG, "MWM has configured these widgets: " + activatedWidgetIds);
 		if (activatedWidgetIds != null && activatedWidgetIds.size() > 0) {
 			for (WidgetVariant wv : getVariants()) {
 				boolean active = activatedWidgetIds.contains(wv.getId());
-				Log.d(C.TAG, "Checking widget id " + wv.getId() + " active=" + active);
-				wv.setActive(active);
-				if (active) {
-					Log.i(C.TAG, wv.getId() + " recognized as activated in MWM widget screen, so activating this one");
-					bicoActive = true;
+				if (wv.isActive() != active) {
+					changed = true;
+					Log.d(C.TAG, "Checking widget id " + wv.getId() + " active=" + active);
+					wv.setActive(active);
+					if (active) {
+						Log.i(C.TAG, wv.getId()
+								+ " recognized as activated in MWM widget screen, so activating this one");
+						bicoActive = true;
+					}
 				}
 			}
 		}
+
+		if (changed) {
+			Log.i(C.TAG, "Widget variants changed. Saving as preferences");
+			save();
+		}
+
 		return bicoActive;
 	}
 
@@ -86,7 +105,6 @@ public class WidgetVariants implements UserInterface {
 				break;
 			}
 		}
-		Log.d(C.TAG, "WidgetVariants isActive:" + active);
 		return active;
 	}
 
@@ -102,6 +120,8 @@ public class WidgetVariants implements UserInterface {
 		} else {
 			Log.d(C.TAG, "No widget active. Skipping sendTripStatistics");
 		}
+
+		lastStats = new Stats(tripStatistics, title);
 	}
 
 	@Override
@@ -109,6 +129,7 @@ public class WidgetVariants implements UserInterface {
 		if (isActive()) {
 			for (WidgetVariant wv : getVariants()) {
 				if (wv.isActive()) {
+					Log.d(C.TAG, "Sending demo statistics to widget " + wv.getId());
 					wv.getUi().sendDemoStatistics();
 				}
 			}
@@ -122,6 +143,7 @@ public class WidgetVariants implements UserInterface {
 		if (isActive()) {
 			for (WidgetVariant wv : getVariants()) {
 				if (wv.isActive()) {
+					Log.d(C.TAG, "Sending clearScreen to widget " + wv.getId());
 					wv.getUi().clearScreen();
 				}
 			}
@@ -135,7 +157,11 @@ public class WidgetVariants implements UserInterface {
 		if (isActive()) {
 			for (WidgetVariant wv : getVariants()) {
 				if (wv.isActive()) {
-					wv.getUi().repaint();
+					if (lastStats != null) {
+						wv.getUi().sendTripStatistics(lastStats.getTripStatistics(), lastStats.getTitle());
+					} else {
+						wv.getUi().repaint();
+					}
 				}
 			}
 		} else {
@@ -143,4 +169,45 @@ public class WidgetVariants implements UserInterface {
 		}
 	}
 
+	public void save() {
+		SharedPreferences prefs = context.getSharedPreferences("widgets", Context.MODE_PRIVATE);
+		Editor edit = prefs.edit();
+		edit.clear();
+		for (WidgetVariant wv : getVariants()) {
+			edit.putBoolean(wv.getId(), wv.isActive());
+		}
+		edit.commit();
+	}
+
+	public void load() {
+		SharedPreferences prefs = context.getSharedPreferences("widgets", Context.MODE_PRIVATE);
+		for (WidgetVariant wv : getVariants()) {
+			boolean active = prefs.getBoolean(wv.getId(), false);
+			if (active)
+				Log.i(C.TAG, "Activating widget " + wv.getId() + " from shared preferences");
+			else
+				Log.i(C.TAG, "Deactivating widget " + wv.getId() + " from shared preferences");
+			wv.setActive(active);
+		}
+	}
+
+	class Stats {
+
+		private TripStatistics tripStatistics;
+		private String title;
+
+		public Stats(TripStatistics tripStatistics, String title) {
+			this.tripStatistics = tripStatistics;
+			this.title = title;
+		}
+
+		public TripStatistics getTripStatistics() {
+			return tripStatistics;
+		}
+
+		public String getTitle() {
+			return title;
+		}
+
+	}
 }

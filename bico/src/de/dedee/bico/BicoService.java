@@ -139,6 +139,7 @@ public class BicoService extends Service {
 					} else {
 						Log.i(C.TAG, "Got REFRESH_WIDGET_REQUEST and we are NOT activated");
 					}
+
 				}
 
 				// Send an UI update for all possible variants we provide.

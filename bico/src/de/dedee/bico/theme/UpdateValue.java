@@ -14,21 +14,43 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package de.dedee.bico.theme;
 
-import android.content.Context;
-import de.dedee.bico.ui.Resolution;
+public class UpdateValue {
 
-public class ThemeFactory {
+	private String value;
 
-	public static Theme createTheme(Context context, Resolution resolution, String themeId) {
-		if (resolution.getHeight() > 32)
-			return new DefaultTheme64(context, resolution);
-		else
-			return new DefaultTheme32(context, resolution);
-		// return new DefaultTheme(context, resolution);
-		// return new DefaultTheme64(context, resolution);
+	private String unit;
+
+	/**
+	 * @param value
+	 * @param unit
+	 */
+	public UpdateValue(String value, String unit) {
+		super();
+		this.value = value;
+		this.unit = unit;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+	public String getUnit() {
+		return unit;
+	}
+
+	public void setUnit(String unit) {
+		this.unit = unit;
+	}
+
+	@Override
+	public String toString() {
+		return value + " " + unit;
 	}
 
 }

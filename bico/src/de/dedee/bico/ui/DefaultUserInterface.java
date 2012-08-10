@@ -41,6 +41,7 @@ public class DefaultUserInterface implements UserInterface {
 		this.context = context;
 		this.variant = variant;
 		this.theme = ThemeFactory.createTheme(context, variant.getResolution(), themeId);
+		sendDemoStatistics();
 	}
 
 	@Override
@@ -48,11 +49,9 @@ public class DefaultUserInterface implements UserInterface {
 		if (tripStatistics != null) {
 			UpdateData ud = new UpdateData();
 			ud.setTitle(title);
-			double speed = Units.convertSpeed(tripStatistics.getAverageMovingSpeed());
-			ud.setAverageSpeed(String.format("%.1f", speed));
+			ud.setAverageSpeed(Units.convertSpeed(tripStatistics.getAverageMovingSpeed()));
 			ud.setMovingTime(Units.durationToString(tripStatistics.getMovingTime()));
-			long elevationGain = (long) Units.convertElevationGain(tripStatistics.getTotalElevationGain());
-			ud.setElevationGain(Long.toString(elevationGain));
+			ud.setElevationGain(Units.convertElevationGain(tripStatistics.getTotalElevationGain()));
 
 			Bitmap bitmap = theme.createTextBitmap(UpdateMode.Recording, ud);
 			send(bitmap);
@@ -68,11 +67,9 @@ public class DefaultUserInterface implements UserInterface {
 
 		UpdateData ud = new UpdateData();
 		ud.setTitle("Demo");
-		double speed = Units.convertSpeed(tripStatistics.getAverageMovingSpeed());
-		ud.setAverageSpeed(String.format("%.1f", speed));
+		ud.setAverageSpeed(Units.convertSpeed(tripStatistics.getAverageMovingSpeed()));
 		ud.setMovingTime(Units.durationToString(tripStatistics.getMovingTime()));
-		long elevationGain = (long) Units.convertElevationGain(tripStatistics.getTotalElevationGain());
-		ud.setElevationGain(Long.toString(elevationGain));
+		ud.setElevationGain(Units.convertElevationGain(tripStatistics.getTotalElevationGain()));
 
 		Bitmap bitmap = theme.createTextBitmap(UpdateMode.Demo, ud);
 		send(bitmap);
