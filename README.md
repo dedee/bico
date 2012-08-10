@@ -33,6 +33,7 @@ DISCLAIMER
 This software is not yet stable. Please use with care and send me your feedback.
 Use the [GitHub Issue Tracker] (https://github.com/dedee/bico/issues) to post your ideas.
 
+![Logo](https://raw.github.com/dedee/bico/master/bico/doc/screendesign_text.png "Logo")
 
 PREREQUISITES
 =============
