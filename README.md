@@ -30,7 +30,7 @@ Whenever you start recording a track with MyTracks the important statistics (ave
 DISCLAIMER
 ==========
 
-This software is not yet stable. It is just a prototype. Please use with care and send me your feedback.
+This software is not yet stable. Please use with care and send me your feedback.
 Use the [GitHub Issue Tracker] (https://github.com/dedee/bico/issues) to post your ideas.
 
 
@@ -46,17 +46,20 @@ PREREQUISITES
 INSTALLATION
 ============
 
-Currently no APK is provided. So you need a complete development environment 
-to compile and install this app.
+Download the latest version from the [project download section on GitHub] (https://github.com/dedee/bico/downloads) and install it. 
+You may need to allow to install from other sources than Google Play.
 
 - Start MyTracks, click More/Settings and grant data access for other apps in the Share dialog. Otherwise we cannot access the current track statistics.
 - Ensure your watch is connected with your Android phone using the  MWM to your watch using the Community Edition of MWM MetaWatch App
-- Go to Preferences screen of MWM and check the widget settings. Activate the "bico Widget (96x32)" in a row.
+- Go to Preferences screen of MWM and check the widget settings
+- Choose between the large and small widget type and place it in the first row
+- The widget should appear on your watch and display some demo data
 
 TEST
 ====
 
-Start MyTracks and record a new track. The statistics appear on your watch.
+Start MyTracks and record a new track. Your watch will vibrate and the actual statistics appear on your watch. 
+If you stop recording the track the watch will vibrate again and the previous track statistics will be displayed on your watch.
 
 
 LICENSE
